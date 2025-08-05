@@ -60,7 +60,7 @@ public class SqliteInsertQueryBuilder : SqliteQueryBuilderBase, IInsertQueryBuil
         {
             _ = _sqlBuilder.Append(" (");
             _ = _sqlBuilder.Append(string.Join(", ", _columns));
-            _ = _sqlBuilder.Append(")");
+            _ = _sqlBuilder.Append(')');
         }
         _ = _sqlBuilder.Append(" VALUES (");
 

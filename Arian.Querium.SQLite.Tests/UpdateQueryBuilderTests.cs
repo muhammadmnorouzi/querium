@@ -13,7 +13,7 @@ public class UpdateQueryBuilderTests
         string expected = new StringBuilder()
             .AppendLine("UPDATE users")
             .AppendLine("SET name = @p0, email = @p1")
-            .Append(";")
+            .Append(';')
             .ToString();
 
         IUpdateQueryBuilder builder = new SqliteUpdateQueryBuilder()

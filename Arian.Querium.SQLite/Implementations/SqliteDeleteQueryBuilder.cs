@@ -7,7 +7,7 @@ namespace Arian.Querium.SQLite.Implementations;
 /// </summary>
 public class SqliteDeleteQueryBuilder : SqliteQueryBuilderBase, IDeleteQueryBuilder
 {
-    private string _table;
+    private string _table = string.Empty;
     private readonly List<string> _whereConditions = [];
 
     /// <summary>
@@ -70,18 +70,18 @@ public class SqliteDeleteQueryBuilder : SqliteQueryBuilderBase, IDeleteQueryBuil
         _ = _sqlBuilder.Clear();
 
         _ = _sqlBuilder.Append($"DELETE FROM {_table}");
-        _ = _sqlBuilder.AppendLine();
 
         if (_whereConditions.Count > 0)
         {
+            _ = _sqlBuilder.AppendLine();
             _ = _sqlBuilder.Append("WHERE ");
-            _ = _sqlBuilder.AppendLine(_whereConditions[0]);
+            _ = _sqlBuilder.Append(_whereConditions[0]);
             for (int i = 1; i < _whereConditions.Count; i++)
             {
-                _ = _sqlBuilder.AppendLine($"    {_whereConditions[i]}");
+                _ = _sqlBuilder.Append($" {_whereConditions[i]}");
             }
         }
-        _ = _sqlBuilder.Append(";");
+        _ = _sqlBuilder.Append(';');
     }
 
     /// <summary>

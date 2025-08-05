@@ -98,7 +98,7 @@ public class SqliteUpdateQueryBuilder : SqliteQueryBuilderBase, IUpdateQueryBuil
                 _ = _sqlBuilder.Append($" {_whereConditions[i]}");
             }
         }
-        _ = _sqlBuilder.Append(";");
+        _ = _sqlBuilder.Append(';');
     }
 
     /// <summary>
