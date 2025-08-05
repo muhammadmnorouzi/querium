@@ -29,10 +29,7 @@ public abstract class SqliteQueryBuilderBase : IQuery
     /// </summary>
     public IDbCommand ToCommand(IDbConnection connection)
     {
-        if (connection == null)
-        {
-            throw new ArgumentNullException(nameof(connection));
-        }
+        ArgumentNullException.ThrowIfNull(connection);
 
         IDbCommand cmd = connection.CreateCommand();
         cmd.CommandText = Sql;

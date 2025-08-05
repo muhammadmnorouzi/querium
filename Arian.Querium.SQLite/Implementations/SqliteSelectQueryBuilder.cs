@@ -123,7 +123,7 @@ public class SqliteSelectQueryBuilder : SqliteQueryBuilderBase, ISelectQueryBuil
         // ORDER BY clause
         if (_orderByColumns.Count > 0)
         {
-            _sqlBuilder.AppendLine();
+            _ = _sqlBuilder.AppendLine();
             _ = _sqlBuilder.Append("ORDER BY ");
             for (int i = 0; i < _orderByColumns.Count; i++)
             {
@@ -132,7 +132,7 @@ public class SqliteSelectQueryBuilder : SqliteQueryBuilderBase, ISelectQueryBuil
             }
         }
 
-        _sqlBuilder.Append(';');
+        _ = _sqlBuilder.Append(';');
     }
 
     /// <summary>

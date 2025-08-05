@@ -72,7 +72,7 @@ public class CreateTableQueryBuilderTests
     {
         // Arrange
         string expected = "CREATE TABLE settings (id INTEGER, value INTEGER DEFAULT 1, created_at TEXT DEFAULT '2025-01-01 10:00:00', is_active BOOLEAN DEFAULT 1);";
-        DateTime testDate = new DateTime(2025, 1, 1, 10, 0, 0);
+        DateTime testDate = new(2025, 1, 1, 10, 0, 0);
 
         ICreateTableQueryBuilder builder = new SqliteCreateTableQueryBuilder()
             .CreateTable("settings")
@@ -93,7 +93,7 @@ public class CreateTableQueryBuilderTests
             .Column("id", ColumnType.Integer);
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => builder.Sql);
+        _ = Assert.Throws<InvalidOperationException>(() => builder.Sql);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class CreateTableQueryBuilderTests
             .CreateTable("empty_table");
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => builder.Sql);
+        _ = Assert.Throws<InvalidOperationException>(() => builder.Sql);
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class CreateTableQueryBuilderTests
             .CreateTable("test_table");
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => builder.Column("", ColumnType.Text));
+        _ = Assert.Throws<ArgumentException>(() => builder.Column("", ColumnType.Text));
     }
 
     [Fact]
