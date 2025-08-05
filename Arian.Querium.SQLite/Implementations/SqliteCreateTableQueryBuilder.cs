@@ -7,7 +7,7 @@ namespace Arian.Querium.SQLite.Implementations;
 /// </summary>
 public class SqliteCreateTableQueryBuilder : SqliteQueryBuilderBase, ICreateTableQueryBuilder
 {
-    private string _table;
+    private string _table = string.Empty;
     private bool _ifNotExists = false;
     private readonly List<string> _columnDefs = [];
 
@@ -32,7 +32,7 @@ public class SqliteCreateTableQueryBuilder : SqliteQueryBuilderBase, ICreateTabl
     /// <summary>
     /// Adds a column definition with type and constraints.
     /// </summary>
-    public ICreateTableQueryBuilder Column(string name, ColumnType type, bool isNullable = true, bool isPrimaryKey = false, object defaultValue = null, bool autoIncrement = false)
+    public ICreateTableQueryBuilder Column(string name, ColumnType type, bool isNullable = true, bool isPrimaryKey = false, object? defaultValue = null, bool autoIncrement = false)
     {
         if (string.IsNullOrEmpty(name))
         {

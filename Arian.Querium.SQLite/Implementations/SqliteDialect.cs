@@ -1,8 +1,4 @@
 ﻿using Arian.Querium.Abstractions.SQL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Arian.Querium.SQLite.Implementations;
 
@@ -31,6 +27,7 @@ public class SqliteDialect : ISqlDialect
             ColumnType.Text => "TEXT",
             ColumnType.Blob => "BLOB",
             ColumnType.Numeric => "NUMERIC",
+            ColumnType.Boolean => "BOOLEAN", // SQLite does not have bool values, it stores them as NUMERIC
             _ => throw new ArgumentException($"Unsupported column type: {columnType}")
         };
     }

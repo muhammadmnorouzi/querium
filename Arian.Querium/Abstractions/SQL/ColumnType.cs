@@ -28,5 +28,10 @@ public enum ColumnType
     /// <summary>
     /// NUMERIC type (affinity).
     /// </summary>
-    Numeric
+    Numeric,
+
+    /// <summary>
+    /// Boolean type (binary state).
+    /// </summary>
+    Boolean,
 }

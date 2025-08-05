@@ -18,5 +18,5 @@ public interface ICreateTableQueryBuilder : IQuery
     /// <summary>
     /// Specifies a column definition with name, type, nullability, primary key, default value, and auto-increment option.
     /// </summary>
-    ICreateTableQueryBuilder Column(string name, ColumnType type, bool isNullable = true, bool isPrimaryKey = false, object defaultValue = null, bool autoIncrement = false);
+    ICreateTableQueryBuilder Column(string name, ColumnType type, bool isNullable = true, bool isPrimaryKey = false, object? defaultValue = null, bool autoIncrement = false);
 }

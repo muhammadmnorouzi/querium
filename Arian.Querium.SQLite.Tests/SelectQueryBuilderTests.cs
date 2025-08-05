@@ -1,5 +1,5 @@
-﻿using Arian.Querium.SQLite.Implementations;
-using Arian.Querium.Abstractions.SQL;
+﻿using Arian.Querium.Abstractions.SQL;
+using Arian.Querium.SQLite.Implementations;
 using System.Text;
 
 namespace Arian.Querium.SQLite.Tests;
