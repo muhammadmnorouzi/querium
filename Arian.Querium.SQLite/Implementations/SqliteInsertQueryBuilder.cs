@@ -7,7 +7,7 @@ namespace Arian.Querium.SQLite.Implementations;
 /// </summary>
 public class SqliteInsertQueryBuilder : SqliteQueryBuilderBase, IInsertQueryBuilder
 {
-    private string _table;
+    private string _table = string.Empty;
     private readonly List<string> _columns = [];
     private readonly List<object> _values = [];
 
@@ -48,7 +48,7 @@ public class SqliteInsertQueryBuilder : SqliteQueryBuilderBase, IInsertQueryBuil
             throw new InvalidOperationException("INTO table not specified.");
         }
 
-        if (_columns.Count != _values.Count)
+        if (_columns.Count != 0 && _columns.Count != _values.Count)
         {
             throw new InvalidOperationException("Number of columns and values must match.");
         }
