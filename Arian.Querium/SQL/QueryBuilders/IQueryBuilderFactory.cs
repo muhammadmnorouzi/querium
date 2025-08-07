@@ -1,4 +1,4 @@
-﻿namespace Arian.Querium.Abstractions.SQL;
+﻿namespace Arian.Querium.SQL.QueryBuilders;
 
 /// <summary>
 /// Factory interface for creating query builders for different SQL commands.

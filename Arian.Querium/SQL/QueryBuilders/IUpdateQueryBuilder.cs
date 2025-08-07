@@ -1,4 +1,4 @@
-﻿namespace Arian.Querium.Abstractions.SQL;
+﻿namespace Arian.Querium.SQL.QueryBuilders;
 
 /// <summary>
 /// A builder for creating UPDATE SQL queries in a fluent manner.

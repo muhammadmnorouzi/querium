@@ -1,4 +1,4 @@
-﻿namespace Arian.Querium.Abstractions.SQL;
+﻿namespace Arian.Querium.SQL.QueryBuilders;
 
 /// <summary>
 /// A builder for creating INSERT SQL queries in a fluent manner.

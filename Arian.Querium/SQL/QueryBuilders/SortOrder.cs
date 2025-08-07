@@ -1,4 +1,4 @@
-﻿namespace Arian.Querium.Abstractions.SQL;
+﻿namespace Arian.Querium.SQL.QueryBuilders;
 
 /// <summary>
 /// Represents the sort order for an ORDER BY clause.

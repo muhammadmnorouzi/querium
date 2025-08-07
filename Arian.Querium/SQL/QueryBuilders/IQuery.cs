@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Arian.Querium.Abstractions.SQL;
+namespace Arian.Querium.SQL.QueryBuilders;
 
 /// <summary>
 /// Represents a SQL query with its text and parameters, ready for execution.

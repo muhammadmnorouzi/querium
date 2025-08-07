@@ -1,8 +1,8 @@
-﻿using Arian.Querium.Abstractions.SQL;
-using Arian.Querium.SQLite.Implementations;
+﻿using Arian.Querium.SQL.QueryBuilders;
+using Arian.Querium.SQLite.Implementations.QueryBuilders;
 using System.Text;
 
-namespace Arian.Querium.SQLite.Tests;
+namespace Arian.Querium.SQLite.Tests.QueryBuilders;
 
 public class SelectQueryBuilderTests
 {

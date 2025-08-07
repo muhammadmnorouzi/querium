@@ -1,6 +1,6 @@
-﻿using Arian.Querium.Abstractions.SQL;
+﻿using Arian.Querium.SQL.QueryBuilders;
 
-namespace Arian.Querium.SQLite.Implementations;
+namespace Arian.Querium.SQLite.Implementations.QueryBuilders;
 
 /// <summary>
 /// SQLite implementation of ISelectQueryBuilder.
@@ -127,7 +127,7 @@ public class SqliteSelectQueryBuilder : SqliteQueryBuilderBase, ISelectQueryBuil
             _ = _sqlBuilder.Append("ORDER BY ");
             for (int i = 0; i < _orderByColumns.Count; i++)
             {
-                string suffix = (i < _orderByColumns.Count - 1) ? "," : "";
+                string suffix = i < _orderByColumns.Count - 1 ? "," : "";
                 _ = _sqlBuilder.Append($"{_orderByColumns[i]}{suffix}");
             }
         }

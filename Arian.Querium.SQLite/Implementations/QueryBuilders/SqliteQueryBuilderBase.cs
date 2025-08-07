@@ -1,8 +1,8 @@
-﻿using Arian.Querium.Abstractions.SQL;
+﻿using Arian.Querium.SQL.QueryBuilders;
 using System.Data;
 using System.Text;
 
-namespace Arian.Querium.SQLite.Implementations;
+namespace Arian.Querium.SQLite.Implementations.QueryBuilders;
 
 /// <summary>
 /// Base class for SQLite query builders, providing common SQL assembly and parameter management.

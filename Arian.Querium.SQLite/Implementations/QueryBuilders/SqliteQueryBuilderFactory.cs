@@ -1,6 +1,6 @@
-﻿using Arian.Querium.Abstractions.SQL;
+﻿using Arian.Querium.SQL.QueryBuilders;
 
-namespace Arian.Querium.SQLite.Implementations;
+namespace Arian.Querium.SQLite.Implementations.QueryBuilders;
 
 /// <summary>
 /// Factory for creating SQLite query builders.

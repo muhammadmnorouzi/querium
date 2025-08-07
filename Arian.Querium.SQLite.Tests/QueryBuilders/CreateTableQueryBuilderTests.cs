@@ -1,12 +1,10 @@
-﻿using Arian.Querium.Abstractions.SQL;
-using Arian.Querium.SQLite.Implementations;
+﻿using Arian.Querium.SQL.QueryBuilders;
+using Arian.Querium.SQLite.Implementations.QueryBuilders;
 
-namespace Arian.Querium.SQLite.Tests;
+namespace Arian.Querium.SQLite.Tests.QueryBuilders;
 
 public class CreateTableQueryBuilderTests
 {
-    private readonly ISqlDialect _dialect = new SqliteDialect();
-
     [Fact]
     public void ShouldBuild_SimpleCreateTableQuery()
     {
