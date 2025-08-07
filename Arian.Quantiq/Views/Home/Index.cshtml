@@ -1,8 +1,49 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="landing-hero ">
+    <div class="container">
+        <h1 class="hero-title">Quantiq</h1>
+        <p class="hero-subtitle">Empowering Executives with Real-Time, Dynamic Data Control</p>
+    </div>
+</div>
+
+<div class="container">
+    <section class="feature-section">
+        <h2>What is Quantiq?</h2>
+        <p>
+            <strong>Quantiq</strong> is a revolutionary business intelligence platform that enables executives and data-driven teams to
+            <em>create, manage, and interact with flat data models dynamically</em>. Designed with simplicity and precision in mind, Quantiq brings structure and clarity to your operational and strategic data.
+        </p>
+    </section>
+
+    <section class="feature-list">
+        <h2>Key Capabilities</h2>
+
+        <div class="feature">
+            <h3>📁 Create Structured Tables</h3>
+            <p>Design new tables directly from the browser to model KPIs, operational data, or financial inputs — no database admin required.</p>
+        </div>
+
+        <div class="feature">
+            <h3>📤 Export as Excel</h3>
+            <p>Download clean, executive-ready Excel files with a single click. Flat tables are exported instantly for offline analysis and presentations.</p>
+        </div>
+
+        <div class="feature">
+            <h3>📥 Upload Updated Data</h3>
+            <p>Upload modified Excel sheets to sync changes back into the system — your edits are intelligently mapped back to their respective models.</p>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Designed for Strategic Decision-Makers</h2>
+        <p>
+            Quantiq was built for C-level professionals, BI teams, and operational managers who demand clarity, speed, and control. Whether you're tracking quarterly forecasts, modeling department KPIs, or integrating with existing BI pipelines — Quantiq empowers your decisions with real-time data agility.
+        </p>
+
+        <a href="#" class="btn btn-primary">SIGN UP - LOGIN</a>
+    </section>
 </div>
