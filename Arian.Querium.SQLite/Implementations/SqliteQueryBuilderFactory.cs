@@ -13,5 +13,3 @@ public class SqliteQueryBuilderFactory : IQueryBuilderFactory
     public IDeleteQueryBuilder Delete() => new SqliteDeleteQueryBuilder();
     public ICreateTableQueryBuilder CreateTable() => new SqliteCreateTableQueryBuilder();
 }
-
-

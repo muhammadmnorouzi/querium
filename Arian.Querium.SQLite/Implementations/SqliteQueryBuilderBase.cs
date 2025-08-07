@@ -53,5 +53,3 @@ public abstract class SqliteQueryBuilderBase : IQuery
         return paramName;
     }
 }
-
-

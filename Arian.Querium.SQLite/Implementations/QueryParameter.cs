@@ -26,5 +26,3 @@ public class QueryParameter : IQueryParameter
         Value = value;
     }
 }
-
-

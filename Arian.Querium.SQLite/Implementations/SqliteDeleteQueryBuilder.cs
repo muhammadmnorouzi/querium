@@ -96,5 +96,3 @@ public class SqliteDeleteQueryBuilder : SqliteQueryBuilderBase, IDeleteQueryBuil
         }
     }
 }
-
-

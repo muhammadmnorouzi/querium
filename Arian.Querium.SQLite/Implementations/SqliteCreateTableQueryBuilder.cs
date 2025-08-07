@@ -120,5 +120,3 @@ public class SqliteCreateTableQueryBuilder : SqliteQueryBuilderBase, ICreateTabl
         }
     }
 }
-
-

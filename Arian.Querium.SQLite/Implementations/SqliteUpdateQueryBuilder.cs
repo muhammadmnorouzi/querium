@@ -113,5 +113,3 @@ public class SqliteUpdateQueryBuilder : SqliteQueryBuilderBase, IUpdateQueryBuil
         }
     }
 }
-
-
