@@ -17,7 +17,7 @@ public class InsertQueryBuilderTests
 
         // Act
         string actualSql = builder.Sql;
-        List<IQueryParameter> parameters = builder.Parameters.ToList();
+        List<IQueryParameter> parameters = [.. builder.Parameters];
 
         // Assert
         Assert.Equal(expectedSql, actualSql);
@@ -40,7 +40,7 @@ public class InsertQueryBuilderTests
 
         // Act
         string actualSql = builder.Sql;
-        List<IQueryParameter> parameters = builder.Parameters.ToList();
+        List<IQueryParameter> parameters = [.. builder.Parameters];
 
         // Assert
         Assert.Equal(expectedSql, actualSql);
@@ -91,7 +91,7 @@ public class InsertQueryBuilderTests
 
         // Act
         string actualSql = builder.Sql;
-        List<IQueryParameter> parameters = builder.Parameters.ToList();
+        List<IQueryParameter> parameters = [.. builder.Parameters];
 
         // Assert
         Assert.Equal(expectedSql, actualSql);

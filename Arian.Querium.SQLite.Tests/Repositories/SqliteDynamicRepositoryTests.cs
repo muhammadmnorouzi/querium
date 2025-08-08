@@ -8,6 +8,7 @@ using System.Data;
 
 namespace Arian.Querium.SQLite.Tests.Repositories;
 
+
 // This collection definition is optional but helps Xunit run tests in parallel.
 [CollectionDefinition("Database collection")]
 public class DatabaseCollection : ICollectionFixture<DatabaseFixture> { }
@@ -32,23 +33,8 @@ public class DatabaseFixture : IDisposable
         _connection = new SqliteConnection(ConnectionString);
         _connection.Open();
 
-        // Initialize the database with a test table.
-        InitializeDatabase();
-    }
-
-    private void InitializeDatabase()
-    {
-        // Use the persistent connection to execute commands.
-        // The 'using' block is no longer needed here as the connection is managed by the fixture.
-        ICreateTableQueryBuilder createTableQuery = QueryBuilderFactory.CreateTable()
-            .CreateTable("users")
-            .IfNotExists()
-            .Column("Id", ColumnType.Integer, isPrimaryKey: true, autoIncrement: true)
-            .Column("Name", ColumnType.Text, isNullable: false)
-            .Column("Age", ColumnType.Integer, isNullable: false);
-
-        using IDbCommand createTableCommand = createTableQuery.ToCommand(_connection);
-        createTableCommand.ExecuteNonQuery();
+        // The initial test table is no longer created here.
+        // It will be created and dropped as part of the individual tests.
     }
 
     public void Dispose()
@@ -65,88 +51,89 @@ public class DatabaseFixture : IDisposable
 public class SqliteDynamicRepositoryTests : IAsyncLifetime
 {
     private readonly DatabaseFixture _fixture;
-    private readonly IDynamicSqlRepository _repository;
+    private readonly SqliteDynamicRepository _repository;
+    private const string TestTableName = "users";
 
     public SqliteDynamicRepositoryTests(DatabaseFixture fixture)
     {
         _fixture = fixture;
-        // The repository instance is created once per test class instance.
         _repository = new SqliteDynamicRepository(_fixture.ConnectionString, _fixture.QueryBuilderFactory);
     }
 
     /// <summary>
-    /// Clears the test table before each test method runs.
+    /// Creates a test table before each test method runs.
     /// </summary>
     public async Task InitializeAsync()
     {
-        IDeleteQueryBuilder deleteQuery = _fixture.QueryBuilderFactory.Delete()
-            .Delete("users");
-
-        await using var connection = new SqliteConnection(_fixture.ConnectionString);
-        await connection.OpenAsync();
-        using IDbCommand cmd = deleteQuery.ToCommand(connection);
-        await ((SqliteCommand)cmd).ExecuteNonQueryAsync();
+        var columns = new Dictionary<string, ColumnType>
+        {
+            { "Id", ColumnType.Integer },
+            { "Name", ColumnType.Text },
+            { "Age", ColumnType.Integer },
+            { "IsActive", ColumnType.Boolean }
+        };
+        await _repository.CreateTableAsync(TestTableName, columns);
     }
 
     /// <summary>
-    /// Disposed of after each test. Not needed here.
+    /// Deletes the test table after each test.
     /// </summary>
-    public Task DisposeAsync()
+    public async Task DisposeAsync()
     {
-        return Task.CompletedTask;
+        await _repository.DeleteTableAsync(TestTableName);
     }
 
     [Fact]
     public async Task ShouldAdd_AndRetrieve_A_New_Row()
     {
         // Arrange
-        string tableName = "users";
         var newUserData = new Dictionary<string, object>
         {
             { "Name", "John Doe" },
-            { "Age", 30 }
+            { "Age", 30 },
+            { "IsActive", true }
         };
 
         // Act
-        await _repository.AddAsync(tableName, newUserData);
+        await _repository.AddAsync(TestTableName, newUserData);
 
         // Assert
-        // Retrieve all and verify the new entry exists.
-        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(tableName);
+        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(TestTableName);
         Dictionary<string, object> addedUser = Assert.Single(allUsers);
         Assert.Equal("John Doe", addedUser["Name"]);
-        Assert.Equal(30L, addedUser["Age"]); // SQLite Integer type often returns long.
+        Assert.Equal(30L, addedUser["Age"]);
+        Assert.Equal(1L, addedUser["IsActive"]);
     }
 
     [Fact]
     public async Task ShouldGet_A_Row_By_Id()
     {
         // Arrange
-        string tableName = "users";
         string primaryKeyColumn = "Id";
-        await _repository.AddAsync(tableName, new Dictionary<string, object> { { "Name", "Jane Smith" }, { "Age", 25 } });
+        await _repository.AddAsync(TestTableName, new Dictionary<string, object> { { "Name", "Jane Smith" }, { "Age", 25 }, { "IsActive", false } });
 
-        // Retrieve the added user's Id. We assume Id is the first column and is autoincrementing.
-        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(tableName);
+        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(TestTableName);
+        Assert.NotEmpty(allUsers);
         long id = (long)allUsers.First()["Id"];
 
         // Act
-        Dictionary<string, object>? retrievedUser = await _repository.GetByIdAsync(tableName, primaryKeyColumn, id);
+        Dictionary<string, object>? retrievedUser = await _repository.GetByIdAsync(TestTableName, primaryKeyColumn, id);
 
         // Assert
         Assert.NotNull(retrievedUser);
         Assert.Equal("Jane Smith", retrievedUser["Name"]);
+        Assert.Equal(0L, retrievedUser["IsActive"]);
     }
 
     [Fact]
     public async Task ShouldUpdate_An_Existing_Row()
     {
         // Arrange
-        string tableName = "users";
         string primaryKeyColumn = "Id";
-        await _repository.AddAsync(tableName, new Dictionary<string, object> { { "Name", "Old Name" }, { "Age", 99 } });
+        await _repository.AddAsync(TestTableName, new Dictionary<string, object> { { "Name", "Old Name" }, { "Age", 99 }, { "IsActive", true } });
 
-        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(tableName);
+        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(TestTableName);
+        Assert.NotEmpty(allUsers);
         long idToUpdate = (long)allUsers.First()["Id"];
 
         var updatedData = new Dictionary<string, object>
@@ -156,45 +143,144 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
         };
 
         // Act
-        await _repository.UpdateAsync(tableName, updatedData, primaryKeyColumn, idToUpdate);
+        await _repository.UpdateAsync(TestTableName, updatedData, primaryKeyColumn, idToUpdate);
 
         // Assert
-        Dictionary<string, object>? updatedUser = await _repository.GetByIdAsync(tableName, primaryKeyColumn, idToUpdate);
+        Dictionary<string, object>? updatedUser = await _repository.GetByIdAsync(TestTableName, primaryKeyColumn, idToUpdate);
         Assert.NotNull(updatedUser);
         Assert.Equal("New Name", updatedUser["Name"]);
         Assert.Equal(35L, updatedUser["Age"]);
+        Assert.Equal(1L, updatedUser["IsActive"]); // This value should not have changed
     }
 
     [Fact]
     public async Task ShouldDelete_A_Row()
     {
         // Arrange
-        string tableName = "users";
         string primaryKeyColumn = "Id";
-        await _repository.AddAsync(tableName, new Dictionary<string, object> { { "Name", "User to delete" }, { "Age", 10 } });
+        await _repository.AddAsync(TestTableName, new Dictionary<string, object> { { "Name", "User to delete" }, { "Age", 10 }, { "IsActive", true } });
 
-        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(tableName);
+        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(TestTableName);
+        Assert.NotEmpty(allUsers);
         long idToDelete = (long)allUsers.First()["Id"];
 
         // Act
-        await _repository.DeleteAsync(tableName, primaryKeyColumn, idToDelete);
+        await _repository.DeleteAsync(TestTableName, primaryKeyColumn, idToDelete);
 
         // Assert
-        Dictionary<string, object>? deletedUser = await _repository.GetByIdAsync(tableName, primaryKeyColumn, idToDelete);
+        Dictionary<string, object>? deletedUser = await _repository.GetByIdAsync(TestTableName, primaryKeyColumn, idToDelete);
         Assert.Null(deletedUser);
+    }
 
-        IEnumerable<Dictionary<string, object>> remainingUsers = await _repository.GetAllAsync(tableName);
-        Assert.Empty(remainingUsers);
+    // --- New Test Cases for Table Management and Edge Cases ---
+
+    [Fact]
+    public async Task ShouldCreate_A_Table_Successfully()
+    {
+        // Arrange is handled by InitializeAsync, which creates the "users" table.
+        // We will test creating a new, different table here.
+        const string newTableName = "products";
+        var columns = new Dictionary<string, ColumnType>
+        {
+            { "Id", ColumnType.Integer },
+            { "ProductName", ColumnType.Text },
+        };
+
+        // Act
+        await _repository.CreateTableAsync(newTableName, columns);
+        await _repository.AddAsync(newTableName, new Dictionary<string, object> { { "ProductName", "Laptop" } });
+
+        // Assert
+        var products = await _repository.GetAllAsync(newTableName);
+        Assert.Single(products);
+
+        // Clean up the new table manually, since DisposeAsync only cleans the main one.
+        await _repository.DeleteTableAsync(newTableName);
     }
 
     [Fact]
-    public async Task ShouldReturn_EmptyList_WhenNoRowsExist()
+    public async Task ShouldRename_A_Table_Successfully()
     {
         // Arrange
-        string tableName = "users";
+        await _repository.AddAsync(TestTableName, new Dictionary<string, object> { { "Name", "Renamed User" }, { "Age", 42 } });
+        const string newTableName = "new_users";
 
         // Act
-        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(tableName);
+        await _repository.RenameTableAsync(TestTableName, newTableName);
+
+        // Assert
+        var renamedUsers = await _repository.GetAllAsync(newTableName);
+        Assert.Single(renamedUsers);
+
+        // We cannot use the old table name anymore.
+        await Assert.ThrowsAsync<SqliteException>(() => _repository.GetAllAsync(TestTableName));
+
+        // Clean up the new table manually.
+        await _repository.DeleteTableAsync(newTableName);
+    }
+
+    [Fact]
+    public async Task ShouldDelete_A_Table_Successfully()
+    {
+        // Arrange
+        // The table is created by InitializeAsync
+
+        // Act
+        await _repository.DeleteTableAsync(TestTableName);
+
+        // Assert
+        await Assert.ThrowsAsync<SqliteException>(() => _repository.GetAllAsync(TestTableName));
+    }
+
+    [Fact]
+    public async Task ShouldReturn_Null_When_GetById_DoesNotExist()
+    {
+        // Arrange
+        await _repository.AddAsync(TestTableName, new Dictionary<string, object> { { "Name", "Existing User" }, { "Age", 100 } });
+
+        // Act
+        Dictionary<string, object>? nonExistentUser = await _repository.GetByIdAsync(TestTableName, "Id", 999);
+
+        // Assert
+        Assert.Null(nonExistentUser);
+    }
+
+    [Fact]
+    public async Task ShouldNotUpdate_A_NonExistent_Row()
+    {
+        // Arrange
+        var updatedData = new Dictionary<string, object> { { "Name", "Updated Name" } };
+
+        // Act
+        await _repository.UpdateAsync(TestTableName, updatedData, "Id", 999);
+
+        // Assert
+        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(TestTableName);
+        Assert.Empty(allUsers);
+    }
+
+    [Fact]
+    public async Task ShouldNotDelete_A_NonExistent_Row()
+    {
+        // Arrange
+        await _repository.AddAsync(TestTableName, new Dictionary<string, object> { { "Name", "Existing User" }, { "Age", 100 } });
+
+        // Act
+        await _repository.DeleteAsync(TestTableName, "Id", 999);
+
+        // Assert
+        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(TestTableName);
+        Assert.Single(allUsers);
+    }
+
+    [Fact]
+    public async Task ShouldHandle_Empty_Table()
+    {
+        // Arrange
+        // The table is created by InitializeAsync, but is empty.
+
+        // Act
+        IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(TestTableName);
 
         // Assert
         Assert.Empty(allUsers);

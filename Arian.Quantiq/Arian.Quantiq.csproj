@@ -25,11 +25,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Features\" />
-    <Folder Include="Domain\Entities\" />
+    <Folder Include="Application\Features\Table\" />
+    <Folder Include="Data\" />
     <Folder Include="Domain\Interfaces\" />
     <Folder Include="Infrastructure\Services\" />
-    <Folder Include="Infrastructure\Persistence\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Arian.Querium\Arian.Querium.csproj" />
   </ItemGroup>
 
 </Project>

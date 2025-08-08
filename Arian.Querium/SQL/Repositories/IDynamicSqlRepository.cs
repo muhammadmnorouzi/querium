@@ -1,10 +1,16 @@
-﻿namespace Arian.Querium.SQL.Repositories;
+﻿using Arian.Querium.SQL.QueryBuilders;
+
+namespace Arian.Querium.SQL.Repositories;
 
 /// <summary>
 /// An abstraction for a dynamic repository that operates on column names and values.
 /// </summary>
 public interface IDynamicSqlRepository
 {
+    Task CreateTableAsync(string tableName, Dictionary<string, ColumnType> columns);
+    Task RenameTableAsync(string oldTableName, string newTableName);
+    Task DeleteTableAsync(string tableName);
+
     /// <summary>
     /// Retrieves all rows from a specified table.
     /// </summary>

@@ -1,4 +1,4 @@
-using Arian.Quantiq.Data;
+using Arian.Quantiq.Infrastructure.Persistence.EF;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
