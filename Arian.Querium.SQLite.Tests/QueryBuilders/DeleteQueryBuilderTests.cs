@@ -105,7 +105,7 @@ public class DeleteQueryBuilderTests
     public void ShouldThrow_WhenTableNameIsNotSpecified()
     {
         // Arrange
-        SqliteDeleteQueryBuilder builder = new SqliteDeleteQueryBuilder();
+        SqliteDeleteQueryBuilder builder = new();
 
         // Act & Assert
         InvalidOperationException exception = Assert.Throws<InvalidOperationException>(() => builder.Sql);

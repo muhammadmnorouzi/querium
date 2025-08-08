@@ -1,10 +1,8 @@
 ﻿using Arian.Querium.SQL.QueryBuilders;
-using Arian.Querium.SQL.Repositories;
 using Arian.Querium.SQLite.Implementations.QueryBuilders;
 using Arian.Querium.SQLite.Implementations.Repositories;
 using Microsoft.Data.Sqlite;
 using SQLitePCL;
-using System.Data;
 
 namespace Arian.Querium.SQLite.Tests.Repositories;
 
@@ -51,13 +49,13 @@ public class DatabaseFixture : IDisposable
 public class SqliteDynamicRepositoryTests : IAsyncLifetime
 {
     private readonly DatabaseFixture _fixture;
-    private readonly SqliteDynamicRepository _repository;
+    private readonly SQliteDynamicRepository _repository;
     private const string TestTableName = "users";
 
     public SqliteDynamicRepositoryTests(DatabaseFixture fixture)
     {
         _fixture = fixture;
-        _repository = new SqliteDynamicRepository(_fixture.ConnectionString, _fixture.QueryBuilderFactory);
+        _repository = new SQliteDynamicRepository(_fixture.ConnectionString, _fixture.QueryBuilderFactory);
     }
 
     /// <summary>
@@ -65,7 +63,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
     /// </summary>
     public async Task InitializeAsync()
     {
-        var columns = new Dictionary<string, ColumnType>
+        Dictionary<string, ColumnType> columns = new()
         {
             { "Id", ColumnType.Integer },
             { "Name", ColumnType.Text },
@@ -87,7 +85,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
     public async Task ShouldAdd_AndRetrieve_A_New_Row()
     {
         // Arrange
-        var newUserData = new Dictionary<string, object>
+        Dictionary<string, object> newUserData = new()
         {
             { "Name", "John Doe" },
             { "Age", 30 },
@@ -136,7 +134,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
         Assert.NotEmpty(allUsers);
         long idToUpdate = (long)allUsers.First()["Id"];
 
-        var updatedData = new Dictionary<string, object>
+        Dictionary<string, object> updatedData = new()
         {
             { "Name", "New Name" },
             { "Age", 35 }
@@ -180,7 +178,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
         // Arrange is handled by InitializeAsync, which creates the "users" table.
         // We will test creating a new, different table here.
         const string newTableName = "products";
-        var columns = new Dictionary<string, ColumnType>
+        Dictionary<string, ColumnType> columns = new()
         {
             { "Id", ColumnType.Integer },
             { "ProductName", ColumnType.Text },
@@ -191,7 +189,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
         await _repository.AddAsync(newTableName, new Dictionary<string, object> { { "ProductName", "Laptop" } });
 
         // Assert
-        var products = await _repository.GetAllAsync(newTableName);
+        IEnumerable<Dictionary<string, object>> products = await _repository.GetAllAsync(newTableName);
         Assert.Single(products);
 
         // Clean up the new table manually, since DisposeAsync only cleans the main one.
@@ -209,7 +207,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
         await _repository.RenameTableAsync(TestTableName, newTableName);
 
         // Assert
-        var renamedUsers = await _repository.GetAllAsync(newTableName);
+        IEnumerable<Dictionary<string, object>> renamedUsers = await _repository.GetAllAsync(newTableName);
         Assert.Single(renamedUsers);
 
         // We cannot use the old table name anymore.
@@ -249,7 +247,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
     public async Task ShouldNotUpdate_A_NonExistent_Row()
     {
         // Arrange
-        var updatedData = new Dictionary<string, object> { { "Name", "Updated Name" } };
+        Dictionary<string, object> updatedData = new() { { "Name", "Updated Name" } };
 
         // Act
         await _repository.UpdateAsync(TestTableName, updatedData, "Id", 999);
