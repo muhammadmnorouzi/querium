@@ -1,0 +1,47 @@
+﻿using Arian.Quantiq.Extensions;
+using Arian.Querium.Common.Results;
+using Arian.Querium.SQL.QueryBuilders;
+using Arian.Querium.SQL.Repositories;
+using FluentValidation;
+using FluentValidation.Results;
+using Mediator;
+using System.Net;
+
+namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
+
+/// <summary>
+/// Handles the creation of a new table in the database.
+/// </summary>
+public class CreateTableCommandHandler(
+    IDynamicSQLRepository repository,
+    IValidator<CreateTableCommand> validator) : ICommandHandler<CreateTableCommand, ApplicationResult<AppVoid>>
+{
+
+    /// <summary>
+    /// Creates a new table with the specified name, columns, and primary key.
+    /// </summary>
+    /// <param name="request">The command containing table name, columns, and primary key column.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An <see cref="ApplicationResult{AppVoid}"/> indicating success or failure.</returns>
+    public async ValueTask<ApplicationResult<AppVoid>> Handle(CreateTableCommand request, CancellationToken cancellationToken)
+    {
+        ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+        if (!validationResult.IsValid)
+        {
+            return (validationResult.ToErrorContainer(), HttpStatusCode.BadRequest);
+        }
+
+        try
+        {
+            Dictionary<string, ColumnType> columns = request.Columns.ToDictionary(c => c.Name, c => c.Type);
+            await repository.CreateTableAsync(request.TableName, columns, request.PrimaryKeyColumn);
+            return new ApplicationResult<AppVoid>(AppVoid.Instance, HttpStatusCode.OK);
+        }
+        catch (Exception ex)
+        {
+            ErrorContainer error = new(ex.Message);
+            return new ApplicationResult<AppVoid>(error, HttpStatusCode.InternalServerError);
+        }
+    }
+}

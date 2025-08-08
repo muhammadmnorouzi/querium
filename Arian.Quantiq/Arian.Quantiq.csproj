@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EPPlus" Version="8.0.8" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
     <PackageReference Include="Mediator.Abstractions" Version="3.0.1" />
@@ -25,8 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Features\Table\" />
-    <Folder Include="Data\" />
+    <Folder Include="Domain\Common\" />
     <Folder Include="Domain\Interfaces\" />
     <Folder Include="Infrastructure\Services\" />
   </ItemGroup>
