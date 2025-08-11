@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Arian.Querium\Arian.Querium.csproj" />
+    <ProjectReference Include="..\Arian.Querium.SQLite\Arian.Querium.SQLite.csproj" />
   </ItemGroup>
 
 </Project>

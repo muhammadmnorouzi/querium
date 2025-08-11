@@ -1,4 +1,8 @@
 using Arian.Quantiq.Infrastructure.Persistence.EF;
+using Arian.Querium.SQL.QueryBuilders;
+using Arian.Querium.SQL.Repositories;
+using Arian.Querium.SQLite.Implementations.QueryBuilders;
+using Arian.Querium.SQLite.Implementations.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +18,16 @@ builder.Services
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddMediatR(options => options.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddScoped<IQueryBuilderFactory , SqliteQueryBuilderFactory>();
+builder.Services.AddScoped<ICreateTableQueryBuilder , SqliteCreateTableQueryBuilder>();
+builder.Services.AddScoped<IDeleteQueryBuilder , SqliteDeleteQueryBuilder>();
+builder.Services.AddScoped<ISqlDialect , SqliteDialect>();
+builder.Services.AddScoped<IInsertQueryBuilder , SqliteInsertQueryBuilder>();
+builder.Services.AddScoped<ISelectQueryBuilder , SqliteSelectQueryBuilder>();
+builder.Services.AddScoped<ISelectQueryBuilder , SqliteSelectQueryBuilder>();
+builder.Services.AddScoped<IUpdateQueryBuilder , SqliteUpdateQueryBuilder>();
+builder.Services.AddScoped<IDynamicSQLRepository , SQliteDynamicRepository>();
 
 builder.Services
     .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
