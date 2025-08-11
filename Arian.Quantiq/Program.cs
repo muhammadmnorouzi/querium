@@ -1,3 +1,4 @@
+using Arian.Quantiq.Domain.Entities.Identity;
 using Arian.Quantiq.Domain.Interfaces;
 using Arian.Quantiq.Infrastructure.Persistence.EF;
 using Arian.Quantiq.Infrastructure.Services;
@@ -33,10 +34,11 @@ builder.Services.AddScoped<IDynamicSQLRepository, SQliteDynamicRepository>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 
 builder.Services
-    .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 WebApplication app = builder.Build();
 
