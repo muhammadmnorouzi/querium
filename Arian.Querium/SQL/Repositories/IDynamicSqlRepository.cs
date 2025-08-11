@@ -56,7 +56,7 @@ public interface IDynamicSQLRepository
     /// <param name="tableName">The name of the table.</param>
     /// <param name="rows">A list of dictionaries, each representing a row with column names and values.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task UpsertRowAsync(string tableName, Dictionary<string, object> row,string pkColumn);
+    Task UpsertRowAsync(string tableName, Dictionary<string, object> row, string pkColumn);
 
     /// <summary>
     /// Renames an existing table.

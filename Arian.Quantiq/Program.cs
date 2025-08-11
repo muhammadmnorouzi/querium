@@ -21,16 +21,16 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddMediatR(options => options.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddScoped<IQueryBuilderFactory , SqliteQueryBuilderFactory>();
-builder.Services.AddScoped<ICreateTableQueryBuilder , SqliteCreateTableQueryBuilder>();
-builder.Services.AddScoped<IDeleteQueryBuilder , SqliteDeleteQueryBuilder>();
-builder.Services.AddScoped<ISqlDialect , SqliteDialect>();
-builder.Services.AddScoped<IInsertQueryBuilder , SqliteInsertQueryBuilder>();
-builder.Services.AddScoped<ISelectQueryBuilder , SqliteSelectQueryBuilder>();
-builder.Services.AddScoped<ISelectQueryBuilder , SqliteSelectQueryBuilder>();
-builder.Services.AddScoped<IUpdateQueryBuilder , SqliteUpdateQueryBuilder>();
-builder.Services.AddScoped<IDynamicSQLRepository , SQliteDynamicRepository>();
-builder.Services.AddScoped<IUserContextService , UserContextService>();
+builder.Services.AddScoped<IQueryBuilderFactory, SqliteQueryBuilderFactory>();
+builder.Services.AddScoped<ICreateTableQueryBuilder, SqliteCreateTableQueryBuilder>();
+builder.Services.AddScoped<IDeleteQueryBuilder, SqliteDeleteQueryBuilder>();
+builder.Services.AddScoped<ISqlDialect, SqliteDialect>();
+builder.Services.AddScoped<IInsertQueryBuilder, SqliteInsertQueryBuilder>();
+builder.Services.AddScoped<ISelectQueryBuilder, SqliteSelectQueryBuilder>();
+builder.Services.AddScoped<ISelectQueryBuilder, SqliteSelectQueryBuilder>();
+builder.Services.AddScoped<IUpdateQueryBuilder, SqliteUpdateQueryBuilder>();
+builder.Services.AddScoped<IDynamicSQLRepository, SQliteDynamicRepository>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
 
 builder.Services
     .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)

@@ -1,7 +1,7 @@
-using System.Security.Claims;
 using Arian.Quantiq.Domain.Entities.Identity;
 using Arian.Quantiq.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Arian.Quantiq.Infrastructure.Services
 {

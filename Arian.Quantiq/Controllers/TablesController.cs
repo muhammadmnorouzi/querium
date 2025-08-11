@@ -2,7 +2,6 @@
 using Arian.Quantiq.Application.Features.SQLTable.Commands.UploadExcel;
 using Arian.Quantiq.Application.Features.SQLTable.Queries.GetEmptyExcel;
 using Arian.Quantiq.Domain.Common.Results;
-using Arian.Quantiq.Domain.Common.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -55,7 +54,7 @@ public class TablesController(IMediator mediator) : ControllerBase
     {
         if (file == null || file.Length == 0)
         {
-            return (new ErrorContainer("No file uploaded."),HttpStatusCode.BadRequest);
+            return (new ErrorContainer("No file uploaded."), HttpStatusCode.BadRequest);
         }
 
         using Stream stream = file.OpenReadStream();
