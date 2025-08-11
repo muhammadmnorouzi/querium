@@ -1,8 +1,8 @@
 ﻿using Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
-using Arian.Quantiq.Application.Features.SQLTable.Commands.DeleteTable;
 using Arian.Quantiq.Application.Features.SQLTable.Commands.UploadExcel;
 using Arian.Quantiq.Application.Features.SQLTable.Queries.GetEmptyExcel;
-using Arian.Querium.Common.Results;
+using Arian.Quantiq.Domain.Common.Results;
+using Arian.Quantiq.Domain.Common.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -25,19 +25,6 @@ public class TablesController(IMediator mediator) : ControllerBase
         return result;
     }
 
-    /// <summary>
-    /// Deletes an existing table.
-    /// </summary>
-    /// <param name="command">The command containing the table name to delete.</param>
-    /// <returns>An IActionResult indicating success or failure.</returns>
-    [HttpDelete]
-    [ProducesResponseType(typeof(ApplicationResult<AppVoid>), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(ApplicationResult<AppVoid>), (int)HttpStatusCode.OK)]
-    public async Task<ApplicationResult<AppVoid>> DeleteTable([FromBody] DeleteTableCommand command)
-    {
-        ApplicationResult<AppVoid> result = await _mediator.Send(command);
-        return result;
-    }
 
     /// <summary>
     /// Downloads an empty Excel file with the table's column structure.

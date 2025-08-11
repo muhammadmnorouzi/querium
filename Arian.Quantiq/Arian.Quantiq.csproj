@@ -22,12 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\Common\" />
-    <Folder Include="Domain\Interfaces\" />
-    <Folder Include="Infrastructure\Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Arian.Quantiq.Domain\Arian.Quantiq.Domain.csproj" />
     <ProjectReference Include="..\Arian.Querium\Arian.Querium.csproj" />
     <ProjectReference Include="..\Arian.Querium.SQLite\Arian.Querium.SQLite.csproj" />
   </ItemGroup>

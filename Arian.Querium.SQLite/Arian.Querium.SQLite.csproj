@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Arian.Quantiq.Domain\Arian.Quantiq.Domain.csproj" />
     <ProjectReference Include="..\Arian.Querium\Arian.Querium.csproj" />
   </ItemGroup>
 

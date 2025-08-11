@@ -1,4 +1,6 @@
+using Arian.Quantiq.Domain.Interfaces;
 using Arian.Quantiq.Infrastructure.Persistence.EF;
+using Arian.Quantiq.Infrastructure.Services;
 using Arian.Querium.SQL.QueryBuilders;
 using Arian.Querium.SQL.Repositories;
 using Arian.Querium.SQLite.Implementations.QueryBuilders;
@@ -28,6 +30,7 @@ builder.Services.AddScoped<ISelectQueryBuilder , SqliteSelectQueryBuilder>();
 builder.Services.AddScoped<ISelectQueryBuilder , SqliteSelectQueryBuilder>();
 builder.Services.AddScoped<IUpdateQueryBuilder , SqliteUpdateQueryBuilder>();
 builder.Services.AddScoped<IDynamicSQLRepository , SQliteDynamicRepository>();
+builder.Services.AddScoped<IUserContextService , UserContextService>();
 
 builder.Services
     .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)

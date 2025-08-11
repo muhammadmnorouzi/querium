@@ -1,7 +1,6 @@
 ﻿using Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
 using Arian.Querium.SQL.QueryBuilders;
 using FluentValidation.TestHelper;
-using System.Net;
 
 namespace Arian.Quantiq.Tests;
 

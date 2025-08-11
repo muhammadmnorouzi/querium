@@ -1,7 +1,9 @@
-﻿using Arian.Querium.SQL.QueryBuilders;
+﻿using Arian.Quantiq.Domain.Interfaces;
+using Arian.Querium.SQL.QueryBuilders;
 using Arian.Querium.SQLite.Implementations.QueryBuilders;
 using Arian.Querium.SQLite.Implementations.Repositories;
 using Microsoft.Data.Sqlite;
+using Moq;
 using SQLitePCL;
 
 namespace Arian.Querium.SQLite.Tests.Repositories;
@@ -14,8 +16,9 @@ public class DatabaseCollection : ICollectionFixture<DatabaseFixture> { }
 // A fixture to handle database setup and teardown for the entire test collection.
 public class DatabaseFixture : IDisposable
 {
-    public string ConnectionString { get; }
+    private string _connectionString { get; }
     public IQueryBuilderFactory QueryBuilderFactory { get; }
+    public Mock<IUserContextService> UserContextServiceMock { get; }
     private readonly SqliteConnection _connection;
 
     public DatabaseFixture()
@@ -24,11 +27,13 @@ public class DatabaseFixture : IDisposable
         Batteries.Init();
 
         // Use a shared in-memory database for all tests in the collection.
-        ConnectionString = "Data Source=:memory:;Mode=Memory;Cache=Shared";
+        _connectionString = "Data Source=:memory:;Mode=Memory;Cache=Shared";
         QueryBuilderFactory = new SqliteQueryBuilderFactory();
+        UserContextServiceMock = new();
+        UserContextServiceMock.Setup(x => x.GetUserConnectionStringAsync()).ReturnsAsync(_connectionString);
 
         // Open and keep the connection alive for the duration of the test run.
-        _connection = new SqliteConnection(ConnectionString);
+        _connection = new SqliteConnection(_connectionString);
         _connection.Open();
 
         // The initial test table is no longer created here.
@@ -55,7 +60,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
     public SqliteDynamicRepositoryTests(DatabaseFixture fixture)
     {
         _fixture = fixture;
-        _repository = new SQliteDynamicRepository(_fixture.ConnectionString, _fixture.QueryBuilderFactory);
+        _repository = new SQliteDynamicRepository(_fixture.UserContextServiceMock.Object, _fixture.QueryBuilderFactory);
     }
 
     /// <summary>

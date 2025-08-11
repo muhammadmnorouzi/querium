@@ -1,4 +1,5 @@
-﻿using Arian.Querium.SQL.QueryBuilders;
+﻿using Arian.Quantiq.Domain.Interfaces;
+using Arian.Querium.SQL.QueryBuilders;
 using Arian.Querium.SQL.Repositories;
 using Microsoft.Data.Sqlite;
 using System.Data;
@@ -9,10 +10,10 @@ namespace Arian.Querium.SQLite.Implementations.Repositories;
 /// A dynamic repository implementation for SQLite databases.
 /// </summary>
 public class SQliteDynamicRepository(
-    string connectionString,
+    IUserContextService userContextService,
     IQueryBuilderFactory queryBuilderFactory) : IDynamicSQLRepository
 {
-    private readonly string _connectionString = connectionString;
+    private readonly IUserContextService userContextService = userContextService;
     private readonly IQueryBuilderFactory _queryBuilderFactory = queryBuilderFactory;
 
     /// <summary>
@@ -21,8 +22,9 @@ public class SQliteDynamicRepository(
     /// <param name="query">The query to execute.</param>
     private async Task<IEnumerable<Dictionary<string, object>>> ExecuteQueryAsync(IQuery query)
     {
+        string connectionString = await userContextService.GetUserConnectionStringAsync();
         List<Dictionary<string, object>> results = [];
-        await using SqliteConnection connection = new(_connectionString);
+        await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
         using IDbCommand cmd = query.ToCommand(connection);
         using SqliteDataReader reader = await ((SqliteCommand)cmd).ExecuteReaderAsync();
@@ -45,7 +47,8 @@ public class SQliteDynamicRepository(
     /// <param name="query">The query to execute.</param>
     private async Task ExecuteNonQueryAsync(IQuery query)
     {
-        await using SqliteConnection connection = new(_connectionString);
+        string connectionString = await userContextService.GetUserConnectionStringAsync();
+        await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
         using IDbCommand cmd = query.ToCommand(connection);
         _ = await ((SqliteCommand)cmd).ExecuteNonQueryAsync();
@@ -81,9 +84,10 @@ public class SQliteDynamicRepository(
     /// <param name="newTableName">The new name for the table.</param>
     public async Task RenameTableAsync(string oldTableName, string newTableName)
     {
+        string connectionString = await userContextService.GetUserConnectionStringAsync();
         string sql = $"ALTER TABLE {oldTableName} RENAME TO {newTableName};";
 
-        await using SqliteConnection connection = new(_connectionString);
+        await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
         await using SqliteCommand cmd = new(sql, connection);
         await cmd.ExecuteNonQueryAsync();
@@ -95,9 +99,10 @@ public class SQliteDynamicRepository(
     /// <param name="tableName">The name of the table to delete.</param>
     public async Task DeleteTableAsync(string tableName)
     {
+        string connectionString = await userContextService.GetUserConnectionStringAsync();
         string sql = $"DROP TABLE IF EXISTS {tableName};";
 
-        await using SqliteConnection connection = new(_connectionString);
+        await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
         await using SqliteCommand cmd = new(sql, connection);
         await cmd.ExecuteNonQueryAsync();
@@ -427,10 +432,11 @@ public class SQliteDynamicRepository(
 
     public async Task<Dictionary<string, ColumnType>> GetTableColumnsAsync(string tableName)
     {
+        string connectionString = await userContextService.GetUserConnectionStringAsync();
         Dictionary<string, ColumnType> columns = new();
         string sql = $"SELECT sql FROM sqlite_master WHERE type='table' AND name='{tableName}';";
 
-        await using SqliteConnection connection = new(_connectionString);
+        await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
         await using SqliteCommand cmd = new(sql, connection);
         object? result = await cmd.ExecuteScalarAsync();

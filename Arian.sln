@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arian.Quantiq", "Arian.Quan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arian.Quantiq.Tests", "Arian.Quantiq.Tests\Arian.Quantiq.Tests.csproj", "{F22DF7B4-4748-462C-BF9D-7CDEB4F47555}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arian.Quantiq.Domain", "Arian.Quantiq.Domain\Arian.Quantiq.Domain.csproj", "{46296C93-DC29-4652-956A-88D091DF3326}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{F22DF7B4-4748-462C-BF9D-7CDEB4F47555}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F22DF7B4-4748-462C-BF9D-7CDEB4F47555}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F22DF7B4-4748-462C-BF9D-7CDEB4F47555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46296C93-DC29-4652-956A-88D091DF3326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46296C93-DC29-4652-956A-88D091DF3326}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46296C93-DC29-4652-956A-88D091DF3326}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46296C93-DC29-4652-956A-88D091DF3326}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

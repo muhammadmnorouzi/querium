@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Arian.Querium.Common.Results;
+namespace Arian.Quantiq.Domain.Common.Results;
 
 public class ErrorContainer(params IEnumerable<string> errorMessages)
 {

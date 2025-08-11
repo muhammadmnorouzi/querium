@@ -7,4 +7,9 @@ public class ApplicationUser : IdentityUser
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the user's connection string for database access.
+    /// </summary>
+    public string ConnectionString { get; set; } = string.Empty;
 }

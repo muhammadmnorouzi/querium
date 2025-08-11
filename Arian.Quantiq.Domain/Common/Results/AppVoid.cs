@@ -1,4 +1,4 @@
-﻿namespace Arian.Querium.Common.Results;
+﻿namespace Arian.Quantiq.Domain.Common.Results;
 
 public class AppVoid
 {

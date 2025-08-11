@@ -1,4 +1,5 @@
-﻿using Arian.Querium.Common.Results;
+﻿using Arian.Quantiq.Domain.Common.Results;
+using Arian.Quantiq.Domain.Common.Results;
 using MediatR;
 
 namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;

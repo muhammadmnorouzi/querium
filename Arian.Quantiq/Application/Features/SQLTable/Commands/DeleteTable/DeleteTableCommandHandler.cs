@@ -1,4 +1,5 @@
-﻿using Arian.Querium.Common.Results;
+﻿using Arian.Quantiq.Domain.Common.Results;
+using Arian.Quantiq.Domain.Common.Results;
 using Arian.Querium.SQL.Repositories;
 using MediatR;
 using System.Net;

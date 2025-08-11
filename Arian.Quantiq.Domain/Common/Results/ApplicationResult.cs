@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json.Serialization;
 
-namespace Arian.Querium.Common.Results;
+namespace Arian.Quantiq.Domain.Common.Results;
 
 public class ApplicationResult<TData> : Result<TData, ErrorContainer>
 {
