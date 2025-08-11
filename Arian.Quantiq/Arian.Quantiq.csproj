@@ -8,23 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="8.0.8" />
-    <PackageReference Include="FluentValidation" Version="12.0.0" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
-    <PackageReference Include="MediatR" Version="13.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.8" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Arian.Quantiq.Domain\Arian.Quantiq.Domain.csproj" />
-    <ProjectReference Include="..\Arian.Querium\Arian.Querium.csproj" />
-    <ProjectReference Include="..\Arian.Querium.SQLite\Arian.Querium.SQLite.csproj" />
+	  <ProjectReference Include="..\Arian.Quantiq.Application\Arian.Quantiq.Application.csproj" />
+	  <ProjectReference Include="..\Arian.Quantiq.Infrastructure\Arian.Quantiq.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using Arian.Quantiq.Domain.Common.Results;
 
-namespace Arian.Quantiq.Extensions;
+namespace Arian.Quantiq.Application.Extensions;
 
 public static class Extensions
 {

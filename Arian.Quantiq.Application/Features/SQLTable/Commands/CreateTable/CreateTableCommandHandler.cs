@@ -1,5 +1,5 @@
-﻿using Arian.Quantiq.Domain.Common.Results;
-using Arian.Quantiq.Extensions;
+﻿using Arian.Quantiq.Application.Extensions;
+using Arian.Quantiq.Domain.Common.Results;
 using Arian.Querium.SQL.QueryBuilders;
 using Arian.Querium.SQL.Repositories;
 using FluentValidation;
