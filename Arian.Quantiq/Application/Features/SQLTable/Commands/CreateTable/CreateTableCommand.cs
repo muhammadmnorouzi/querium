@@ -1,12 +1,12 @@
 ﻿using Arian.Querium.Common.Results;
-using Mediator;
+using MediatR;
 
 namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
 
 /// <summary>
 /// Represents a command to create a new table in the database.
 /// </summary>
-public class CreateTableCommand : ICommand<ApplicationResult<AppVoid>>
+public class CreateTableCommand : IRequest<ApplicationResult<AppVoid>>
 {
     /// <summary>
     /// Gets or sets the name of the table to create.

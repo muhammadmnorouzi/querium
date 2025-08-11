@@ -1,12 +1,12 @@
 ﻿using Arian.Querium.Common.Results;
-using Mediator;
+using MediatR;
 
 namespace Arian.Quantiq.Application.Features.SQLTable.Commands.UploadExcel;
 
 /// <summary>
 /// Represents a command to upload an Excel file to update the dynamic database.
 /// </summary>
-public class UploadExcelCommand : ICommand<ApplicationResult<AppVoid>>
+public class UploadExcelCommand : IRequest<ApplicationResult<AppVoid>>
 {
     /// <summary>
     /// Gets or sets the name of the table to update.

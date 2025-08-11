@@ -1,6 +1,6 @@
 ﻿using Arian.Querium.Common.Results;
 using Arian.Querium.SQL.Repositories;
-using Mediator;
+using MediatR;
 using OfficeOpenXml;
 using System.Net;
 
@@ -9,7 +9,7 @@ namespace Arian.Quantiq.Application.Features.SQLTable.Queries.GetEmptyExcel;
 /// <summary>
 /// Handles the generation of an empty Excel file for a table's structure.
 /// </summary>
-public class GetEmptyExcelQueryHandler(IDynamicSQLRepository repository) : IQueryHandler<GetEmptyExcelQuery, ApplicationResult<MemoryStream>>
+public class GetEmptyExcelQueryHandler(IDynamicSQLRepository repository) : IRequestHandler<GetEmptyExcelQuery, ApplicationResult<MemoryStream>>
 {
 
     /// <summary>
@@ -18,7 +18,7 @@ public class GetEmptyExcelQueryHandler(IDynamicSQLRepository repository) : IQuer
     /// <param name="request">The query containing the table name.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An <see cref="ApplicationResult{MemoryStream}"/> containing the Excel file stream or an error.</returns>
-    public async ValueTask<ApplicationResult<MemoryStream>> Handle(GetEmptyExcelQuery request, CancellationToken cancellationToken)
+    public async Task<ApplicationResult<MemoryStream>> Handle(GetEmptyExcelQuery request, CancellationToken cancellationToken)
     {
         try
         {

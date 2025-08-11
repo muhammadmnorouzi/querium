@@ -3,7 +3,7 @@ using Arian.Quantiq.Application.Features.SQLTable.Commands.DeleteTable;
 using Arian.Quantiq.Application.Features.SQLTable.Commands.UploadExcel;
 using Arian.Quantiq.Application.Features.SQLTable.Queries.GetEmptyExcel;
 using Arian.Querium.Common.Results;
-using Mediator;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

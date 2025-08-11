@@ -1,6 +1,6 @@
 ﻿using Arian.Querium.Common.Results;
 using Arian.Querium.SQL.Repositories;
-using Mediator;
+using MediatR;
 using System.Net;
 
 namespace Arian.Quantiq.Application.Features.SQLTable.Commands.DeleteTable;
@@ -8,7 +8,7 @@ namespace Arian.Quantiq.Application.Features.SQLTable.Commands.DeleteTable;
 /// <summary>
 /// Handles the deletion of an existing table.
 /// </summary>
-public class DeleteTableCommandHandler(IDynamicSQLRepository repository) : ICommandHandler<DeleteTableCommand, ApplicationResult<AppVoid>>
+public class DeleteTableCommandHandler(IDynamicSQLRepository repository) : IRequestHandler<DeleteTableCommand, ApplicationResult<AppVoid>>
 {
 
     /// <summary>
@@ -17,7 +17,7 @@ public class DeleteTableCommandHandler(IDynamicSQLRepository repository) : IComm
     /// <param name="request">The command containing the table name.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An <see cref="ApplicationResult{AppVoid}"/> indicating success or failure.</returns>
-    public async ValueTask<ApplicationResult<AppVoid>> Handle(DeleteTableCommand request, CancellationToken cancellationToken)
+    public async Task<ApplicationResult<AppVoid>> Handle(DeleteTableCommand request, CancellationToken cancellationToken)
     {
         try
         {

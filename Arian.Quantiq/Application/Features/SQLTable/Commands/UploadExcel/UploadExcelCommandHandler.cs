@@ -1,7 +1,7 @@
 ﻿using Arian.Querium.Common.Results;
 using Arian.Querium.SQL.QueryBuilders;
 using Arian.Querium.SQL.Repositories;
-using Mediator;
+using MediatR;
 using OfficeOpenXml;
 using System.Net;
 
@@ -11,7 +11,7 @@ namespace Arian.Quantiq.Application.Features.SQLTable.Commands.UploadExcel;
 /// <summary>
 /// Handles the upload of an Excel file to update or insert rows in a table.
 /// </summary>
-public class UploadExcelCommandHandler(IDynamicSQLRepository repository) : ICommandHandler<UploadExcelCommand, ApplicationResult<AppVoid>>
+public class UploadExcelCommandHandler(IDynamicSQLRepository repository) : IRequestHandler<UploadExcelCommand, ApplicationResult<AppVoid>>
 {
     // A placeholder for the primary key column name.
     // In a real application, this should be determined dynamically (e.g., from a configuration or a schema query).
@@ -23,7 +23,7 @@ public class UploadExcelCommandHandler(IDynamicSQLRepository repository) : IComm
     /// <param name="request">The command containing the table name and Excel file stream.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An <see cref="ApplicationResult{AppVoid}"/> indicating success or failure.</returns>
-    public async ValueTask<ApplicationResult<AppVoid>> Handle(UploadExcelCommand request, CancellationToken cancellationToken)
+    public async Task<ApplicationResult<AppVoid>> Handle(UploadExcelCommand request, CancellationToken cancellationToken)
     {
         try
         {

@@ -1,12 +1,12 @@
 ﻿using Arian.Querium.Common.Results;
-using Mediator;
+using MediatR;
 
 namespace Arian.Quantiq.Application.Features.SQLTable.Commands.DeleteTable;
 
 /// <summary>
 /// Represents a command to delete an existing table.
 /// </summary>
-public class DeleteTableCommand : ICommand<ApplicationResult<AppVoid>>
+public class DeleteTableCommand : IRequest<ApplicationResult<AppVoid>>
 {
     /// <summary>
     /// Gets or sets the name of the table to delete.

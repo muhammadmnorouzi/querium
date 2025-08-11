@@ -4,7 +4,7 @@ using Arian.Querium.SQL.QueryBuilders;
 using Arian.Querium.SQL.Repositories;
 using FluentValidation;
 using FluentValidation.Results;
-using Mediator;
+using MediatR;
 using System.Net;
 
 namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
@@ -14,7 +14,7 @@ namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
 /// </summary>
 public class CreateTableCommandHandler(
     IDynamicSQLRepository repository,
-    IValidator<CreateTableCommand> validator) : ICommandHandler<CreateTableCommand, ApplicationResult<AppVoid>>
+    IValidator<CreateTableCommand> validator) : IRequestHandler<CreateTableCommand, ApplicationResult<AppVoid>>
 {
 
     /// <summary>
@@ -23,7 +23,7 @@ public class CreateTableCommandHandler(
     /// <param name="request">The command containing table name, columns, and primary key column.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An <see cref="ApplicationResult{AppVoid}"/> indicating success or failure.</returns>
-    public async ValueTask<ApplicationResult<AppVoid>> Handle(CreateTableCommand request, CancellationToken cancellationToken)
+    public async Task<ApplicationResult<AppVoid>> Handle(CreateTableCommand request, CancellationToken cancellationToken)
     {
         ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
 

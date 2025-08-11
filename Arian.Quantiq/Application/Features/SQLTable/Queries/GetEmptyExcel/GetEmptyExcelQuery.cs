@@ -1,12 +1,12 @@
 ﻿using Arian.Querium.Common.Results;
-using Mediator;
+using MediatR;
 
 namespace Arian.Quantiq.Application.Features.SQLTable.Queries.GetEmptyExcel;
 
 /// <summary>
 /// Represents a query to download an empty Excel file for a selected table.
 /// </summary>
-public class GetEmptyExcelQuery : IQuery<ApplicationResult<MemoryStream>>
+public class GetEmptyExcelQuery : IRequest<ApplicationResult<MemoryStream>>
 {
     /// <summary>
     /// Gets or sets the name of the table for which to generate the Excel file.

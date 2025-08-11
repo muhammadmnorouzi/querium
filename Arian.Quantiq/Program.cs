@@ -12,7 +12,7 @@ builder.Services
     .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
-builder.Services.AddMediator();
+builder.Services.AddMediatR(options => options.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services
