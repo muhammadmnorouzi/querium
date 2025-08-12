@@ -23,17 +23,17 @@ public class UserContextService(IHttpContextAccessor httpContextAccessor,
     /// <inheritdoc />
     public Task<string> GetUserIdAsync()
     {
-        var user = _httpContextAccessor.HttpContext?.User;
-        var userId = user?.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+        ClaimsPrincipal? user = _httpContextAccessor.HttpContext?.User;
+        string userId = user?.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
         return Task.FromResult(userId);
     }
 
     /// <inheritdoc />
     public async Task<string> GetUserConnectionStringAsync()
     {
-        var userId = await GetUserIdAsync();
+        string userId = await GetUserIdAsync();
         if (string.IsNullOrEmpty(userId)) return string.Empty;
-        var user = await _userManager.FindByIdAsync(userId);
+        ApplicationUser? user = await _userManager.FindByIdAsync(userId);
         return user?.ConnectionString ?? string.Empty;
     }
 }

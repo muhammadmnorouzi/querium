@@ -25,7 +25,8 @@ namespace Arian.Quantiq.Infrastructure
             }
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = true)
-               .AddEntityFrameworkStores<ApplicationDbContext>();
+               .AddEntityFrameworkStores<ApplicationDbContext>()
+               .AddDefaultTokenProviders();
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 

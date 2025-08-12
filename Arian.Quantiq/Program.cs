@@ -1,11 +1,11 @@
 using Arian.Quantiq.Application;
 using Arian.Quantiq.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllersWithViews();
@@ -14,7 +14,7 @@ builder.Services.AddRazorPages();
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
 }
