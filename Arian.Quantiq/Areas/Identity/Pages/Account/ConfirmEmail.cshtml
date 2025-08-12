@@ -4,5 +4,29 @@
     ViewData["Title"] = "Confirm email";
 }
 
-<h1>@ViewData["Title"]</h1>
-<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="page-title text-center">@ViewData["Title"]</h1>
+
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                var statusClass = Model.StatusMessage.StartsWith("Error") ? "alert-error" : "alert-success";
+                <div class="alert @statusClass text-center" role="alert">
+                    @Model.StatusMessage
+                </div>
+            }
+            else
+            {
+                <div class="text-center">
+                    <p class="lead">Your account is ready to be confirmed.</p>
+                    <form method="post">
+                        <input type="hidden" asp-for="UserId" />
+                        <input type="hidden" asp-for="Code" />
+                        <button type="submit" class="btn btn-primary">Confirm my email</button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>

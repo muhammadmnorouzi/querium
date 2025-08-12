@@ -1,6 +1,5 @@
 using Arian.Quantiq.Application;
 using Arian.Quantiq.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

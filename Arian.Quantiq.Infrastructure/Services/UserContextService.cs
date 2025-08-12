@@ -1,5 +1,5 @@
-using Arian.Quantiq.Domain.Interfaces;
 using Arian.Quantiq.Domain.Entities.Identity;
+using Arian.Quantiq.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;

@@ -15,18 +15,15 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3">
             <div class="container-fluid d-flex justify-content-between align-items-center">
 
-                <!-- Logo + Brand -->
                 <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
                     <img src="~/icons/Quantiq.png" alt="Quantiq Logo" height="36" class="me-2" />
                     <span class="fw-bold fs-4">Quantiq</span>
                 </a>
 
-                <!-- Toggler for small screens -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Navigation links + login -->
                 <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
                     <ul class="navbar-nav me-3">
                         <li class="nav-item">
@@ -37,19 +34,18 @@
                         </li>
                     </ul>
 
-                    <!-- Login/Logout partial -->
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
 
-
-
-    <div class="container-fluid">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
     <footer class="site-footer">

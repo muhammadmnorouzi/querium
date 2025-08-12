@@ -1,5 +1,4 @@
-﻿using Arian.Quantiq.Domain.Interfaces;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -15,7 +14,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblies(assemblies);
         services.AddMediatR(options => options.RegisterServicesFromAssemblies(assemblies));
 
-       return services;
+        return services;
     }
 }
 
