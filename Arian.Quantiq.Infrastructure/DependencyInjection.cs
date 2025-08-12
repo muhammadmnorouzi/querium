@@ -3,8 +3,6 @@ using Arian.Quantiq.Domain.Entities.Identity;
 using Arian.Quantiq.Domain.Interfaces;
 using Arian.Quantiq.Infrastructure.Persistence.EF;
 using Arian.Quantiq.Infrastructure.Services;
-using Arian.Querium.SQL.QueryBuilders;
-using Arian.Querium.SQL.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;

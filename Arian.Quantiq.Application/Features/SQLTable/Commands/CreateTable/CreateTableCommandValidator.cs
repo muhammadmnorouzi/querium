@@ -1,5 +1,4 @@
 ﻿using Arian.Quantiq.Application.Interfaces;
-using Arian.Querium.SQL.QueryBuilders;
 using FluentValidation;
 
 namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;

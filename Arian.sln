@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arian.Quantiq.Application",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arian.Quantiq.Infrastructure", "Arian.Quantiq.Infrastructure\Arian.Quantiq.Infrastructure.csproj", "{5E044A07-CF0B-41D6-A9C9-00041C9471B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arian.Querium", "Arian.Querium\Arian.Querium.csproj", "{E7297134-C591-4A97-7506-F652B2239750}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{5E044A07-CF0B-41D6-A9C9-00041C9471B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E044A07-CF0B-41D6-A9C9-00041C9471B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E044A07-CF0B-41D6-A9C9-00041C9471B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E7297134-C591-4A97-7506-F652B2239750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7297134-C591-4A97-7506-F652B2239750}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7297134-C591-4A97-7506-F652B2239750}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7297134-C591-4A97-7506-F652B2239750}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
