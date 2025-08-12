@@ -30,7 +30,7 @@ public class DatabaseFixture : IDisposable
         _connectionString = "Data Source=:memory:;Mode=Memory;Cache=Shared";
         QueryBuilderFactory = new SqliteQueryBuilderFactory();
         UserContextServiceMock = new();
-        UserContextServiceMock.Setup(x => x.GetUserConnectionStringAsync()).ReturnsAsync(_connectionString);
+        _ = UserContextServiceMock.Setup(x => x.GetUserConnectionString()).ReturnsAsync(_connectionString);
 
         // Open and keep the connection alive for the duration of the test run.
         _connection = new SqliteConnection(_connectionString);
@@ -54,13 +54,13 @@ public class DatabaseFixture : IDisposable
 public class SqliteDynamicRepositoryTests : IAsyncLifetime
 {
     private readonly DatabaseFixture _fixture;
-    private readonly SQliteDynamicRepository _repository;
+    private readonly SqliteDynamicRepository _repository;
     private const string TestTableName = "users";
 
     public SqliteDynamicRepositoryTests(DatabaseFixture fixture)
     {
         _fixture = fixture;
-        _repository = new SQliteDynamicRepository(_fixture.UserContextServiceMock.Object, _fixture.QueryBuilderFactory);
+        _repository = new SqliteDynamicRepository(_fixture.UserContextServiceMock.Object, _fixture.QueryBuilderFactory);
     }
 
     /// <summary>
@@ -195,7 +195,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
 
         // Assert
         IEnumerable<Dictionary<string, object>> products = await _repository.GetAllAsync(newTableName);
-        Assert.Single(products);
+        _ = Assert.Single(products);
 
         // Clean up the new table manually, since DisposeAsync only cleans the main one.
         await _repository.DeleteTableAsync(newTableName);
@@ -213,10 +213,10 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
 
         // Assert
         IEnumerable<Dictionary<string, object>> renamedUsers = await _repository.GetAllAsync(newTableName);
-        Assert.Single(renamedUsers);
+        _ = Assert.Single(renamedUsers);
 
         // We cannot use the old table name anymore.
-        await Assert.ThrowsAsync<SqliteException>(() => _repository.GetAllAsync(TestTableName));
+        _ = await Assert.ThrowsAsync<SqliteException>(() => _repository.GetAllAsync(TestTableName));
 
         // Clean up the new table manually.
         await _repository.DeleteTableAsync(newTableName);
@@ -232,7 +232,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
         await _repository.DeleteTableAsync(TestTableName);
 
         // Assert
-        await Assert.ThrowsAsync<SqliteException>(() => _repository.GetAllAsync(TestTableName));
+        _ = await Assert.ThrowsAsync<SqliteException>(() => _repository.GetAllAsync(TestTableName));
     }
 
     [Fact]
@@ -273,7 +273,7 @@ public class SqliteDynamicRepositoryTests : IAsyncLifetime
 
         // Assert
         IEnumerable<Dictionary<string, object>> allUsers = await _repository.GetAllAsync(TestTableName);
-        Assert.Single(allUsers);
+        _ = Assert.Single(allUsers);
     }
 
     [Fact]

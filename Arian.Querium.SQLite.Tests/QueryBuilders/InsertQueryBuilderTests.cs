@@ -77,7 +77,7 @@ public class InsertQueryBuilderTests
             .Values("John Doe");
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => builder.Sql);
+        _ = Assert.Throws<InvalidOperationException>(() => builder.Sql);
     }
 
     [Fact]

@@ -1,11 +1,10 @@
-﻿using Arian.Quantiq.Domain.Entities.Identity;
+﻿using Arian.Quantiq.Application.Interfaces;
+using Arian.Quantiq.Domain.Entities.Identity;
 using Arian.Quantiq.Domain.Interfaces;
 using Arian.Quantiq.Infrastructure.Persistence.EF;
 using Arian.Quantiq.Infrastructure.Services;
 using Arian.Querium.SQL.QueryBuilders;
 using Arian.Querium.SQL.Repositories;
-using Arian.Querium.SQLite.Implementations.QueryBuilders;
-using Arian.Querium.SQLite.Implementations.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -25,24 +24,17 @@ public static class DependencyInjection
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         }
 
-        services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = true)
+        _ = services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = true)
            .AddEntityFrameworkStores<ApplicationDbContext>()
            .AddDefaultTokenProviders();
 
-        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+        _ = services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-        services.AddScoped<IQueryBuilderFactory, SqliteQueryBuilderFactory>();
-        services.AddScoped<ICreateTableQueryBuilder, SqliteCreateTableQueryBuilder>();
-        services.AddScoped<IDeleteQueryBuilder, SqliteDeleteQueryBuilder>();
-        services.AddScoped<ISqlDialect, SqliteDialect>();
-        services.AddScoped<IInsertQueryBuilder, SqliteInsertQueryBuilder>();
-        services.AddScoped<ISelectQueryBuilder, SqliteSelectQueryBuilder>();
-        services.AddScoped<ISelectQueryBuilder, SqliteSelectQueryBuilder>();
-        services.AddScoped<IUpdateQueryBuilder, SqliteUpdateQueryBuilder>();
-        services.AddScoped<IUserContextService, UserContextService>();
-        services.AddScoped<IDynamicSQLRepository, SQliteDynamicRepository>();
+        _ = services.AddScoped<IUserContextService, UserContextService>();
+        _ = services.AddScoped<ISQLTableManager, SqlServerTableManager>();
+        _ = services.AddScoped<IDatabaseCompiler, SqlServerCompiler>();
 
-        services.AddScoped<IEmailSender, NullEmailSender>();
+        _ = services.AddScoped<IEmailSender, NullEmailSender>();
         return services;
     }
 }

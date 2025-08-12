@@ -2,6 +2,7 @@ using Arian.Quantiq.Domain.Entities.Identity;
 using Arian.Quantiq.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 
 namespace Arian.Quantiq.Infrastructure.Services;
@@ -15,10 +16,9 @@ namespace Arian.Quantiq.Infrastructure.Services;
 /// <param name="httpContextAccessor">Provides access to the current HTTP context.</param>
 /// <param name="userManager">Manages user-related operations.</param>
 public class UserContextService(IHttpContextAccessor httpContextAccessor,
-                                UserManager<ApplicationUser> userManager) : IUserContextService
+                                IConfigurationManager configurationManager) : IUserContextService
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
 
     /// <inheritdoc />
     public Task<string> GetUserIdAsync()
@@ -29,11 +29,8 @@ public class UserContextService(IHttpContextAccessor httpContextAccessor,
     }
 
     /// <inheritdoc />
-    public async Task<string> GetUserConnectionStringAsync()
+    public Task<string?> GetUserConnectionString()
     {
-        string userId = await GetUserIdAsync();
-        if (string.IsNullOrEmpty(userId)) return string.Empty;
-        ApplicationUser? user = await _userManager.FindByIdAsync(userId);
-        return user?.ConnectionString ?? string.Empty;
+        return Task.FromResult(configurationManager.GetConnectionString("UserDefaultConnection"));
     }
 }

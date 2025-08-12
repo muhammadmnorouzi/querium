@@ -24,4 +24,23 @@ public class ErrorContainer(params IEnumerable<string> errorMessages)
             _errorMessages.Add(v);
         }
     }
+
+
+    public void AddErrorIf(bool condition,string v)
+    {
+        if (!string.IsNullOrWhiteSpace(v) && condition)
+        {
+            _errorMessages.Add(v);
+        }
+    }
+
+    public bool IsEmpty()
+    {
+        return _errorMessages.Count == 0;
+    }
+
+    public bool IsNotEmpty()
+    {
+        return _errorMessages.Count >= 1;
+    }
 }

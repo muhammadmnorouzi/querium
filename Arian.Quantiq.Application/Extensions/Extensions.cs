@@ -11,5 +11,3 @@ public static class Extensions
             : new ErrorContainer(validationResult.Errors.Select(e => e.ErrorMessage));
     }
 }
-
-

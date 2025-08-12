@@ -14,6 +14,6 @@ public interface IUserContextService
     /// <summary>
     /// Gets the current user's connection string.
     /// </summary>
-    /// <returns>A task that returns the user's connection string.</returns>
-    Task<string> GetUserConnectionStringAsync();
+    /// <returns>A task that returns the user's connection string or null if could not be found.</returns>
+    Task<string?> GetUserConnectionString();
 }

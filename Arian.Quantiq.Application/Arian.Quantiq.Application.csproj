@@ -7,10 +7,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Features\SQLTable\Commands\DeleteTable\**" />
+	  <Compile Remove="Features\SQLTable\Commands\UploadExcel\**" />
+	  <Compile Remove="Features\SQLTable\Queries\**" />
+	  <EmbeddedResource Remove="Features\SQLTable\Commands\DeleteTable\**" />
+	  <EmbeddedResource Remove="Features\SQLTable\Commands\UploadExcel\**" />
+	  <EmbeddedResource Remove="Features\SQLTable\Queries\**" />
+	  <None Remove="Features\SQLTable\Commands\DeleteTable\**" />
+	  <None Remove="Features\SQLTable\Commands\UploadExcel\**" />
+	  <None Remove="Features\SQLTable\Queries\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="EPPlus" Version="8.0.8" />
 		<PackageReference Include="FluentValidation" Version="12.0.0" />
 		<PackageReference Include="MediatR" Version="13.0.0" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+		<PackageReference Include="SqlKata" Version="4.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -39,7 +39,7 @@ public class UploadExcelCommandHandler(IDynamicSQLRepository repository) : IRequ
             List<string> columnNamesInDb = columns.Keys.ToList(); // Corrected to use Keys for column names
 
             // Read header row to map column indices
-            Dictionary<int, string> headerMap = new();
+            Dictionary<int, string> headerMap = [];
             for (int col = 1; col <= columnNamesInDb.Count; col++)
             {
                 string? header = worksheet.Cells[1, col].Text?.Trim();
@@ -55,12 +55,12 @@ public class UploadExcelCommandHandler(IDynamicSQLRepository repository) : IRequ
                 return new ApplicationResult<AppVoid>(error, HttpStatusCode.BadRequest);
             }
 
-            List<Dictionary<string, object>> rows = new();
+            List<Dictionary<string, object>> rows = [];
 
             // Read data rows starting from row 2
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
-                Dictionary<string, object> rowData = new();
+                Dictionary<string, object> rowData = [];
                 foreach (KeyValuePair<int, string> col in headerMap)
                 {
                     object value = worksheet.Cells[row, col.Key].Value;

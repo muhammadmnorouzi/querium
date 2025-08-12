@@ -44,14 +44,14 @@ public class ConfirmEmailModel(UserManager<ApplicationUser> userManager) : PageM
             return RedirectToPage("/Index");
         }
 
-        var user = await _userManager.FindByIdAsync(UserId);
+        ApplicationUser user = await _userManager.FindByIdAsync(UserId);
         if (user == null)
         {
             return NotFound($"Unable to load user with ID '{UserId}'.");
         }
 
         string decodedCode = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
-        var result = await _userManager.ConfirmEmailAsync(user, decodedCode);
+        IdentityResult result = await _userManager.ConfirmEmailAsync(user, decodedCode);
         StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
 
         return Page();

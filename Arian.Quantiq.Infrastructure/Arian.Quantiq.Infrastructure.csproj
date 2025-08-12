@@ -24,7 +24,6 @@
 
   <ItemGroup>
 	  <ProjectReference Include="..\Arian.Quantiq.Application\Arian.Quantiq.Application.csproj" />
-	  <ProjectReference Include="..\Arian.Querium.SQLite\Arian.Querium.SQLite.csproj" />
   </ItemGroup>
 
 </Project>

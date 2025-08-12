@@ -9,7 +9,7 @@ namespace Arian.Querium.SQLite.Implementations.Repositories;
 /// <summary>
 /// A dynamic repository implementation for SQLite databases.
 /// </summary>
-public class SQliteDynamicRepository(
+public class SqliteDynamicRepository(
     IUserContextService userContextService,
     IQueryBuilderFactory queryBuilderFactory) : IDynamicSQLRepository
 {
@@ -22,7 +22,7 @@ public class SQliteDynamicRepository(
     /// <param name="query">The query to execute.</param>
     private async Task<IEnumerable<Dictionary<string, object>>> ExecuteQueryAsync(IQuery query)
     {
-        string connectionString = await userContextService.GetUserConnectionStringAsync();
+        string connectionString = await userContextService.GetUserConnectionString();
         List<Dictionary<string, object>> results = [];
         await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
@@ -47,7 +47,7 @@ public class SQliteDynamicRepository(
     /// <param name="query">The query to execute.</param>
     private async Task ExecuteNonQueryAsync(IQuery query)
     {
-        string connectionString = await userContextService.GetUserConnectionStringAsync();
+        string connectionString = await userContextService.GetUserConnectionString();
         await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
         using IDbCommand cmd = query.ToCommand(connection);
@@ -69,7 +69,7 @@ public class SQliteDynamicRepository(
 
         foreach (KeyValuePair<string, ColumnType> column in columns)
         {
-            builder.Column(column.Key, column.Value,
+            _ = builder.Column(column.Key, column.Value,
                 isPrimaryKey: column.Key == primaryKeyColumn,
                 autoIncrement: column.Key == primaryKeyColumn);
         }
@@ -84,13 +84,13 @@ public class SQliteDynamicRepository(
     /// <param name="newTableName">The new name for the table.</param>
     public async Task RenameTableAsync(string oldTableName, string newTableName)
     {
-        string connectionString = await userContextService.GetUserConnectionStringAsync();
+        string connectionString = await userContextService.GetUserConnectionString();
         string sql = $"ALTER TABLE {oldTableName} RENAME TO {newTableName};";
 
         await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
         await using SqliteCommand cmd = new(sql, connection);
-        await cmd.ExecuteNonQueryAsync();
+        _ = await cmd.ExecuteNonQueryAsync();
     }
 
     /// <summary>
@@ -99,13 +99,13 @@ public class SQliteDynamicRepository(
     /// <param name="tableName">The name of the table to delete.</param>
     public async Task DeleteTableAsync(string tableName)
     {
-        string connectionString = await userContextService.GetUserConnectionStringAsync();
+        string connectionString = await userContextService.GetUserConnectionString();
         string sql = $"DROP TABLE IF EXISTS {tableName};";
 
         await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
         await using SqliteCommand cmd = new(sql, connection);
-        await cmd.ExecuteNonQueryAsync();
+        _ = await cmd.ExecuteNonQueryAsync();
     }
 
     /// <summary>
@@ -168,10 +168,10 @@ public class SQliteDynamicRepository(
 
         foreach (KeyValuePair<string, object> column in columns)
         {
-            queryBuilder.Set(column.Key, column.Value);
+            _ = queryBuilder.Set(column.Key, column.Value);
         }
 
-        queryBuilder.Where(primaryKeyColumn, id);
+        _ = queryBuilder.Where(primaryKeyColumn, id);
 
         await ExecuteNonQueryAsync(queryBuilder);
     }
@@ -214,7 +214,7 @@ public class SQliteDynamicRepository(
             bool isPrimaryKey = column.Key == columns.Keys.First();
             bool autoIncrement = isPrimaryKey && column.Value == ColumnType.Integer;
 
-            builder.Column(
+            _ = builder.Column(
                 column.Key,
                 column.Value,
                 isPrimaryKey: isPrimaryKey,
@@ -243,7 +243,7 @@ public class SQliteDynamicRepository(
 
         foreach (KeyValuePair<string, (ColumnType Type, bool IsNullable, bool IsPrimaryKey, object? DefaultValue, bool AutoIncrement)> column in columns)
         {
-            builder.Column(
+            _ = builder.Column(
                 column.Key,
                 column.Value.Type,
                 isNullable: column.Value.IsNullable,
@@ -269,7 +269,7 @@ public class SQliteDynamicRepository(
 
         if (columns != null && columns.Length > 0)
         {
-            queryBuilder.Select(columns);
+            _ = queryBuilder.Select(columns);
         }
 
         if (conditions != null)
@@ -281,11 +281,11 @@ public class SQliteDynamicRepository(
                 {
                     if (i == 0)
                     {
-                        queryBuilder.Where(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
+                        _ = queryBuilder.Where(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
                     }
                     else
                     {
-                        queryBuilder.Or(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
+                        _ = queryBuilder.Or(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
                     }
                 }
             }
@@ -297,7 +297,7 @@ public class SQliteDynamicRepository(
             {
                 if (order.HasValue)
                 {
-                    queryBuilder.OrderBy(order.Value.Column, order.Value.Order);
+                    _ = queryBuilder.OrderBy(order.Value.Column, order.Value.Order);
                 }
             }
         }
@@ -318,7 +318,7 @@ public class SQliteDynamicRepository(
 
         foreach (KeyValuePair<string, object> column in columns)
         {
-            queryBuilder.Set(column.Key, column.Value);
+            _ = queryBuilder.Set(column.Key, column.Value);
         }
 
         if (conditions != null)
@@ -330,11 +330,11 @@ public class SQliteDynamicRepository(
                 {
                     if (i == 0)
                     {
-                        queryBuilder.Where(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
+                        _ = queryBuilder.Where(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
                     }
                     else
                     {
-                        queryBuilder.Or(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
+                        _ = queryBuilder.Or(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
                     }
                 }
             }
@@ -362,11 +362,11 @@ public class SQliteDynamicRepository(
                 {
                     if (i == 0)
                     {
-                        queryBuilder.Where(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
+                        _ = queryBuilder.Where(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
                     }
                     else
                     {
-                        queryBuilder.Or(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
+                        _ = queryBuilder.Or(condition.Value.Column, condition.Value.Value, condition.Value.Operator);
                     }
                 }
             }
@@ -401,10 +401,10 @@ public class SQliteDynamicRepository(
 
         foreach (KeyValuePair<string, object> column in row)
         {
-            updateQueryBuilder.Set(column.Key, column.Value);
+            _ = updateQueryBuilder.Set(column.Key, column.Value);
         }
 
-        updateQueryBuilder.Where(pkColumn, row[pkColumn]);
+        _ = updateQueryBuilder.Where(pkColumn, row[pkColumn]);
 
         // Check if the row exists before attempting an update.
         ISelectQueryBuilder selectQueryBuilder = _queryBuilderFactory.Select()
@@ -432,8 +432,8 @@ public class SQliteDynamicRepository(
 
     public async Task<Dictionary<string, ColumnType>> GetTableColumnsAsync(string tableName)
     {
-        string connectionString = await userContextService.GetUserConnectionStringAsync();
-        Dictionary<string, ColumnType> columns = new();
+        string connectionString = await userContextService.GetUserConnectionString();
+        Dictionary<string, ColumnType> columns = [];
         string sql = $"SELECT sql FROM sqlite_master WHERE type='table' AND name='{tableName}';";
 
         await using SqliteConnection connection = new(connectionString);

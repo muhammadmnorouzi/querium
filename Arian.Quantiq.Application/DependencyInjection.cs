@@ -11,11 +11,9 @@ public static class DependencyInjection
     {
         Assembly[] assemblies = [typeof(DependencyInjection).Assembly];
 
-        services.AddValidatorsFromAssemblies(assemblies);
-        services.AddMediatR(options => options.RegisterServicesFromAssemblies(assemblies));
+        _ = services.AddValidatorsFromAssemblies(assemblies);
+        _ = services.AddMediatR(options => options.RegisterServicesFromAssemblies(assemblies));
 
         return services;
     }
 }
-
-

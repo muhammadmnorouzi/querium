@@ -27,7 +27,7 @@ public class CreateTableCommandValidatorTests
         TestValidationResult<CreateTableCommand> result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.TableName)
+        _ = result.ShouldHaveValidationErrorFor(x => x.TableName)
               .WithErrorMessage("Table name is required.");
     }
 
@@ -49,7 +49,7 @@ public class CreateTableCommandValidatorTests
         TestValidationResult<CreateTableCommand> result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.TableName)
+        _ = result.ShouldHaveValidationErrorFor(x => x.TableName)
               .WithErrorMessage("Table name must be a valid SQLite identifier.");
     }
 
@@ -71,7 +71,7 @@ public class CreateTableCommandValidatorTests
         TestValidationResult<CreateTableCommand> result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.PrimaryKeyColumn)
+        _ = result.ShouldHaveValidationErrorFor(x => x.PrimaryKeyColumn)
               .WithErrorMessage("Primary key column is required.");
     }
 
@@ -93,7 +93,7 @@ public class CreateTableCommandValidatorTests
         TestValidationResult<CreateTableCommand> result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.PrimaryKeyColumn)
+        _ = result.ShouldHaveValidationErrorFor(x => x.PrimaryKeyColumn)
               .WithErrorMessage("Primary key column name must be a valid SQLite identifier.");
     }
 
@@ -115,7 +115,7 @@ public class CreateTableCommandValidatorTests
         TestValidationResult<CreateTableCommand> result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.PrimaryKeyColumn)
+        _ = result.ShouldHaveValidationErrorFor(x => x.PrimaryKeyColumn)
               .WithErrorMessage("Primary key column must be of type Integer.");
     }
 
@@ -127,14 +127,14 @@ public class CreateTableCommandValidatorTests
         {
             TableName = "users",
             PrimaryKeyColumn = "Id",
-            Columns = new List<ColumnDefinition>()
+            Columns = []
         };
 
         // Act
         TestValidationResult<CreateTableCommand> result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Columns)
+        _ = result.ShouldHaveValidationErrorFor(x => x.Columns)
               .WithErrorMessage("At least one column is required.");
     }
 
@@ -156,7 +156,7 @@ public class CreateTableCommandValidatorTests
         TestValidationResult<CreateTableCommand> result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor("Columns[0].Name")
+        _ = result.ShouldHaveValidationErrorFor("Columns[0].Name")
               .WithErrorMessage("Column name is required.");
     }
 
@@ -178,7 +178,7 @@ public class CreateTableCommandValidatorTests
         TestValidationResult<CreateTableCommand> result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor("Columns[0].Name")
+        _ = result.ShouldHaveValidationErrorFor("Columns[0].Name")
               .WithErrorMessage("Column name must be a valid SQLite identifier.");
     }
 
@@ -201,7 +201,7 @@ public class CreateTableCommandValidatorTests
         TestValidationResult<CreateTableCommand> result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor("Columns[0].Type")
+        _ = result.ShouldHaveValidationErrorFor("Columns[0].Type")
               .WithErrorMessage("Column type must be a valid SQLite data type: Integer, Real, Text, Blob, Numeric, Boolean.");
     }
 
@@ -235,10 +235,10 @@ public class CreateTableCommandValidatorTests
         {
             TableName = "users",
             PrimaryKeyColumn = "UserId",
-            Columns = new List<ColumnDefinition>
-        {
+            Columns =
+        [
             new() { Name = "Name", Type = ColumnType.Text }
-        }
+        ]
         };
 
         FluentValidation.Results.ValidationResult result = await validator.ValidateAsync(command);

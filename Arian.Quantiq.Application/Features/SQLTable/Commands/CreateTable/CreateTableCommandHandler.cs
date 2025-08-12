@@ -1,4 +1,5 @@
 ﻿using Arian.Quantiq.Application.Extensions;
+using Arian.Quantiq.Application.Interfaces;
 using Arian.Quantiq.Domain.Common.Results;
 using Arian.Querium.SQL.QueryBuilders;
 using Arian.Querium.SQL.Repositories;
@@ -13,7 +14,7 @@ namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
 /// Handles the creation of a new table in the database.
 /// </summary>
 public class CreateTableCommandHandler(
-    IDynamicSQLRepository repository,
+    ISQLTableManager tableManager,
     IValidator<CreateTableCommand> validator) : IRequestHandler<CreateTableCommand, ApplicationResult<AppVoid>>
 {
 
@@ -34,14 +35,14 @@ public class CreateTableCommandHandler(
 
         try
         {
-            Dictionary<string, ColumnType> columns = request.Columns.ToDictionary(c => c.Name, c => c.Type);
-            await repository.CreateTableAsync(request.TableName, columns, request.PrimaryKeyColumn);
-            return new ApplicationResult<AppVoid>(AppVoid.Instance, HttpStatusCode.OK);
+            ApplicationResult<AppVoid> applicationResult = await tableManager.CreateTable(request.CreateTableDTO, cancellationToken);
+
+            return applicationResult;
         }
+
         catch (Exception ex)
         {
-            ErrorContainer error = new(ex.Message);
-            return new ApplicationResult<AppVoid>(error, HttpStatusCode.InternalServerError);
+            return (new ErrorContainer([ex.Message]), HttpStatusCode.InternalServerError);
         }
     }
 }
