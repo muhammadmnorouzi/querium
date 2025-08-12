@@ -86,14 +86,20 @@ input.form-control, select.form-control, textarea.form-control {
     padding: .75rem;
     background-color: var(--gray);
     border: 1px solid var(--gold);
-    color: var(--gold);
+    color: var(--text-light);
     border-radius: 4px
 }
 
     input.form-control:focus, select.form-control:focus, textarea.form-control:focus {
         outline: none;
         border-color: var(--white);
-        background-color: #1a1a1a
+        background-color: var(--light-bg);
+    }
+
+    input.form-control::placeholder,
+    select.form-control::placeholder,
+    textarea.form-control::placeholder {
+        color: var(--text-muted);
     }
 
 .btn {
