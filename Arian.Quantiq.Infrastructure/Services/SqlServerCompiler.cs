@@ -2,8 +2,10 @@
 using Arian.Quantiq.Application.Enums;
 using Arian.Quantiq.Application.Interfaces;
 using Arian.Quantiq.Domain.Common.Results;
+using Arian.Quantiq.Infrastructure.Internals;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Arian.Quantiq.Infrastructure.Services;
 
@@ -13,9 +15,11 @@ namespace Arian.Quantiq.Infrastructure.Services;
 /// </summary>
 public class SqlServerCompiler : IDatabaseCompiler
 {
+    private static readonly Regex __sqlIdentRegex = new(@"^(?!.*[\s\W\d])(?!_)[a-zA-Z_][a-zA-Z0-9_]{0,127}$", RegexOptions.Compiled);
+
     public async Task<ApplicationResult<string>> Compile(CreateTableDTO model, CancellationToken cancellationToken)
     {
-        string errorMessage = await Validate(model , cancellationToken);
+        string errorMessage = await Validate(model, cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(errorMessage))
         {
@@ -82,6 +86,27 @@ public class SqlServerCompiler : IDatabaseCompiler
         return (builder.ToString(), HttpStatusCode.OK);
     }
 
+    public async Task<bool> IsValidSqlIdentifier(string sqlIdentifier)
+    {
+        if (string.IsNullOrWhiteSpace(sqlIdentifier) || sqlIdentifier.Length > 128)
+        {
+            return false;
+        }
+
+        if (!__sqlIdentRegex.IsMatch(sqlIdentifier))
+        {
+            return false;
+        }
+
+        if (SqlReservedWords.ReservedKeywords.Contains(sqlIdentifier))
+        {
+            return false;
+        }
+
+        await Task.CompletedTask;
+        return true;
+    }
+
     /// <summary>
     /// Validates the abstract table creation model for common errors.
     /// </summary>
@@ -91,6 +116,11 @@ public class SqlServerCompiler : IDatabaseCompiler
         if (string.IsNullOrWhiteSpace(input.TableName))
         {
             return "Table name cannot be null or whitespace.";
+        }
+
+        if (!await IsValidSqlIdentifier(input.TableName))
+        {
+            return $"Table name {input.TableName} is not a valid SQL identifier.";
         }
 
         if (input.Columns == null || input.Columns.Count == 0)
@@ -107,6 +137,12 @@ public class SqlServerCompiler : IDatabaseCompiler
             {
                 return "Column name cannot be null or whitespace.";
             }
+
+            if (!await IsValidSqlIdentifier(column.Name))
+            {
+                return $"Column name {column.Name} is not a valid SQL identifier.";
+            }
+
             if (!columnNames.Add(column.Name.ToLower()))
             {
                 return $"Duplicate column name found: '{column.Name}'.";
@@ -127,8 +163,6 @@ public class SqlServerCompiler : IDatabaseCompiler
         {
             return "A table can have at most one primary key.";
         }
-
-        await Task.CompletedTask;
 
         return string.Empty;
     }

@@ -15,4 +15,5 @@ public interface IDatabaseCompiler
     /// <returns>The fully formatted SQL string.</returns>
     Task<ApplicationResult<string>> Compile(CreateTableDTO model, CancellationToken cancellationToken = default);
     Task<string> Validate(CreateTableDTO model, CancellationToken cancellationToken = default);
+    Task<bool> IsValidSqlIdentifier(string sqlIdentifier);
 }
