@@ -8,6 +8,12 @@ namespace Arian.Quantiq.Infrastructure.Persistence.EF;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options)
 {
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
 
     public virtual DbSet<TableDefinition> TableDefinitions { get; protected set; }
 }
