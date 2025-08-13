@@ -1,4 +1,5 @@
 ﻿using Arian.Quantiq.Application.Extensions;
+using Arian.Quantiq.Application.Features.SQLTable.Notifications.TableCreated;
 using Arian.Quantiq.Application.Interfaces;
 using Arian.Quantiq.Domain.Common.Results;
 using FluentValidation;
@@ -13,7 +14,8 @@ namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
 /// </summary>
 public class CreateTableCommandHandler(
     ISQLTableManager tableManager,
-    IValidator<CreateTableCommand> validator) : IRequestHandler<CreateTableCommand, ApplicationResult<AppVoid>>
+    IValidator<CreateTableCommand> validator,
+    IMediator mediator) : IRequestHandler<CreateTableCommand, ApplicationResult<AppVoid>>
 {
 
     /// <summary>
@@ -34,6 +36,11 @@ public class CreateTableCommandHandler(
         try
         {
             ApplicationResult<AppVoid> applicationResult = await tableManager.CreateTable(request.CreateTableDTO, cancellationToken);
+
+            if (applicationResult.IsSuccess)
+            {
+                await mediator.Publish(new TableCreatedNotification() { TableName = request.CreateTableDTO.TableName }, cancellationToken);
+            }
 
             return applicationResult;
         }

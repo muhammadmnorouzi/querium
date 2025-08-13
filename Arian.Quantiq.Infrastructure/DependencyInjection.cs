@@ -31,6 +31,7 @@ public static class DependencyInjection
         _ = services.AddScoped<IUserContextService, UserContextService>();
         _ = services.AddScoped<ISQLTableManager, SqlServerTableManager>();
         _ = services.AddScoped<IDatabaseCompiler, SqlServerCompiler>();
+        _ = services.AddScoped<ITableDefinitionRepository, EFTableDefinitionRepository>();
 
         _ = services.AddScoped<IEmailSender, NullEmailSender>();
         return services;

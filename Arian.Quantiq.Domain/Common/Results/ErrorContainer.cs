@@ -26,7 +26,7 @@ public class ErrorContainer(params IEnumerable<string> errorMessages)
     }
 
 
-    public void AddErrorIf(bool condition,string v)
+    public void AddErrorIf(bool condition, string v)
     {
         if (!string.IsNullOrWhiteSpace(v) && condition)
         {

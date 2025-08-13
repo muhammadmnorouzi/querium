@@ -14,7 +14,7 @@ namespace Arian.Quantiq.Infrastructure.Services;
 /// <param name="httpContextAccessor">Provides access to the current HTTP context.</param>
 /// <param name="userManager">Manages user-related operations.</param>
 public class UserContextService(IHttpContextAccessor httpContextAccessor,
-                                IConfigurationManager configurationManager) : IUserContextService
+                                IConfiguration configurationManager) : IUserContextService
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 

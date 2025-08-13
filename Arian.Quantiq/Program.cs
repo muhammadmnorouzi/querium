@@ -1,5 +1,7 @@
 using Arian.Quantiq.Application;
 using Arian.Quantiq.Infrastructure;
+using Arian.Quantiq.Middlewares;
+using System.Text.Json.Serialization;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -7,8 +9,19 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.AddRazorPages();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Quantiq", Version = "v1" });
+});
 
 WebApplication app = builder.Build();
 
@@ -16,6 +29,12 @@ WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     _ = app.UseMigrationsEndPoint();
+
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Quantiq V1");
+    });
 }
 else
 {

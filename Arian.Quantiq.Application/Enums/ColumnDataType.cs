@@ -1,9 +1,12 @@
-﻿namespace Arian.Quantiq.Application.Enums;
+﻿using System.Text.Json.Serialization;
+
+namespace Arian.Quantiq.Application.Enums;
 
 /// <summary>
 /// Defines generic, database-agnostic data types for table columns.
 /// This abstraction allows a single model to represent data types across different SQL dialects.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ColumnDataType
 {
     /// <summary>

@@ -2,7 +2,6 @@
 using Arian.Quantiq.Application.Enums;
 using Arian.Quantiq.Application.Interfaces;
 using Arian.Quantiq.Domain.Common.Results;
-using Arian.Quantiq.Infrastructure.Internals;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,7 +14,7 @@ namespace Arian.Quantiq.Infrastructure.Services;
 /// </summary>
 public class SqlServerCompiler : IDatabaseCompiler
 {
-    private static readonly Regex __sqlIdentRegex = new(@"^(?!.*[\s\W\d])(?!_)[a-zA-Z_][a-zA-Z0-9_]{0,127}$", RegexOptions.Compiled);
+    private static readonly Regex __sqlIdentRegex = new Regex(@"^[a-zA-Z_][a-zA-Z0-9_]*$", RegexOptions.Compiled);
 
     public async Task<ApplicationResult<string>> Compile(CreateTableDTO model, CancellationToken cancellationToken)
     {
@@ -86,25 +85,14 @@ public class SqlServerCompiler : IDatabaseCompiler
         return (builder.ToString(), HttpStatusCode.OK);
     }
 
-    public async Task<bool> IsValidSqlIdentifier(string sqlIdentifier)
+    public Task<bool> IsValidSqlIdentifier(string sqlIdentifier)
     {
         if (string.IsNullOrWhiteSpace(sqlIdentifier) || sqlIdentifier.Length > 128)
         {
-            return false;
+            return Task.FromResult(false);
         }
 
-        if (!__sqlIdentRegex.IsMatch(sqlIdentifier))
-        {
-            return false;
-        }
-
-        if (SqlReservedWords.ReservedKeywords.Contains(sqlIdentifier))
-        {
-            return false;
-        }
-
-        await Task.CompletedTask;
-        return true;
+        return Task.FromResult(__sqlIdentRegex.IsMatch(sqlIdentifier));
     }
 
     /// <summary>
