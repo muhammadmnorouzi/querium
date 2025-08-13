@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Arian.Quantiq.Infrastructure.Persistence.EF.Configurations;
 
-internal class TableDefinitionConfiguration : IEntityTypeConfiguration<TableDefinition>
+public class TableDefinitionConfiguration : IEntityTypeConfiguration<TableDefinition>
 {
     public void Configure(EntityTypeBuilder<TableDefinition> builder)
     {

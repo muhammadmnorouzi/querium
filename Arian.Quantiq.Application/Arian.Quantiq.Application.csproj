@@ -7,15 +7,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Features\SQLTable\Commands\DeleteTable\**" />
-	  <Compile Remove="Features\SQLTable\Commands\UploadExcel\**" />
-	  <Compile Remove="Features\SQLTable\Queries\**" />
-	  <EmbeddedResource Remove="Features\SQLTable\Commands\DeleteTable\**" />
-	  <EmbeddedResource Remove="Features\SQLTable\Commands\UploadExcel\**" />
-	  <EmbeddedResource Remove="Features\SQLTable\Queries\**" />
-	  <None Remove="Features\SQLTable\Commands\DeleteTable\**" />
-	  <None Remove="Features\SQLTable\Commands\UploadExcel\**" />
-	  <None Remove="Features\SQLTable\Queries\**" />
+	  <Compile Remove="Features\TableManagement\Commands\DeleteTable\**" />
+	  <Compile Remove="Features\TableManagement\Commands\UploadExcel\**" />
+	  <Compile Remove="Features\TableManagement\Queries\**" />
+	  <EmbeddedResource Remove="Features\TableManagement\Commands\DeleteTable\**" />
+	  <EmbeddedResource Remove="Features\TableManagement\Commands\UploadExcel\**" />
+	  <EmbeddedResource Remove="Features\TableManagement\Queries\**" />
+	  <None Remove="Features\TableManagement\Commands\DeleteTable\**" />
+	  <None Remove="Features\TableManagement\Commands\UploadExcel\**" />
+	  <None Remove="Features\TableManagement\Queries\**" />
 	</ItemGroup>
 
 	<ItemGroup>

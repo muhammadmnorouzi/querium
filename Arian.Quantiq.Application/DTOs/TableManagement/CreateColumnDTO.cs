@@ -1,6 +1,6 @@
 ﻿using Arian.Quantiq.Application.Enums;
 
-namespace Arian.Quantiq.Application.DTOs;
+namespace Arian.Quantiq.Application.DTOs.TableManagement;
 
 /// <summary>
 /// Represents a single column definition using abstract data types and properties.

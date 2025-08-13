@@ -1,5 +1,5 @@
 ﻿using Arian.Quantiq.Application.Extensions;
-using Arian.Quantiq.Application.Features.SQLTable.Notifications.TableCreated;
+using Arian.Quantiq.Application.Features.TableManagement.Notifications.TableCreated;
 using Arian.Quantiq.Application.Interfaces;
 using Arian.Quantiq.Domain.Common.Results;
 using FluentValidation;
@@ -7,7 +7,7 @@ using FluentValidation.Results;
 using MediatR;
 using System.Net;
 
-namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
+namespace Arian.Quantiq.Application.Features.TableManagement.Commands.CreateTable;
 
 /// <summary>
 /// Handles the creation of a new table in the database.

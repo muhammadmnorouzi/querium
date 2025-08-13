@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Arian.Quantiq.Application.Features.SQLTable.Notifications.TableCreated;
+namespace Arian.Quantiq.Application.Features.TableManagement.Notifications.TableCreated;
 
 public class TableCreatedNotification : INotification
 {

@@ -1,4 +1,5 @@
 ﻿using Arian.Quantiq.Application.DTOs;
+using Arian.Quantiq.Application.DTOs.TableManagement;
 using Arian.Quantiq.Application.Enums;
 using Arian.Quantiq.Application.Interfaces;
 using Arian.Quantiq.Domain.Common.Results;
@@ -14,7 +15,7 @@ namespace Arian.Quantiq.Infrastructure.Services;
 /// </summary>
 public class SqlServerCompiler : IDatabaseCompiler
 {
-    private static readonly Regex __sqlIdentRegex = new Regex(@"^[a-zA-Z_][a-zA-Z0-9_]*$", RegexOptions.Compiled);
+    private static readonly Regex __sqlIdentRegex = new(@"^[a-zA-Z_][a-zA-Z0-9_]*$", RegexOptions.Compiled);
 
     public async Task<ApplicationResult<string>> Compile(CreateTableDTO model, CancellationToken cancellationToken)
     {
@@ -83,6 +84,69 @@ public class SqlServerCompiler : IDatabaseCompiler
 
         await Task.CompletedTask;
         return (builder.ToString(), HttpStatusCode.OK);
+    }
+
+    /// <summary>
+    /// Validates a table update request for SQL Server.
+    /// This method is the core of the validation logic.
+    /// </summary>
+    public async Task<string> ValidateUpdate(UpdateTableDTO updateDto, List<ColumnMetadata> existingColumns)
+    {
+        if (string.IsNullOrWhiteSpace(updateDto.TableName))
+        {
+            return "Table name cannot be null or whitespace.";
+        }
+
+        if (updateDto.ColumnUpdates == null || updateDto.ColumnUpdates.Count == 0)
+        {
+            return "No column updates were provided.";
+        }
+
+        // Create a dictionary for efficient lookup of existing columns.
+        Dictionary<string, ColumnMetadata> existingColumnsDict = existingColumns.ToDictionary(c => c.Name, StringComparer.OrdinalIgnoreCase);
+
+        // Track columns that are being dropped or renamed
+        HashSet<string> droppedColumns = new(StringComparer.OrdinalIgnoreCase);
+
+        foreach (UpdateColumnDTO update in updateDto.ColumnUpdates)
+        {
+            if (update.Operation == UpdateOperationType.Add)
+            {
+                // Check if the column to be added already exists.
+                if (existingColumnsDict.ContainsKey(update.NewName))
+                {
+                    return $"Column '{update.NewName}' already exists.";
+                }
+            }
+            else if (update.Operation == UpdateOperationType.Drop)
+            {
+                // Check if the column to be dropped actually exists.
+                if (!existingColumnsDict.ContainsKey(update.OldName))
+                {
+                    return $"Column '{update.OldName}' does not exist.";
+                }
+                // Check for dependencies or constraints on the column (not implemented here but essential).
+                #warning TODO
+                droppedColumns.Add(update.OldName);
+            }
+            else if (update.Operation == UpdateOperationType.Alter || update.Operation == UpdateOperationType.Rename)
+            {
+                // Check if the column to be altered/renamed exists.
+                if (!existingColumnsDict.ContainsKey(update.OldName))
+                {
+                    return $"Column '{update.OldName}' does not exist.";
+                }
+
+                // If renaming, ensure the new name is not a duplicate.
+                if (update.Operation == UpdateOperationType.Rename && existingColumnsDict.ContainsKey(update.NewName))
+                {
+                    return $"A column with the new name '{update.NewName}' already exists.";
+                }
+            }
+        }
+
+        await Task.CompletedTask;
+        return string.Empty; // Return empty string if validation passes.
     }
 
     public Task<bool> IsValidSqlIdentifier(string sqlIdentifier)

@@ -1,7 +1,7 @@
 ﻿using Arian.Quantiq.Application.Interfaces;
 using FluentValidation;
 
-namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
+namespace Arian.Quantiq.Application.Features.TableManagement.Commands.CreateTable;
 
 /// <summary>
 /// Validator for <see cref="CreateTableCommand"/>.
@@ -21,7 +21,7 @@ public class CreateTableCommandValidator : AbstractValidator<CreateTableCommand>
             .CustomAsync(async (createTableDTO, context, cancellationToken) =>
             {
                 // Call the validation logic and get the error message.
-                var validationError = await _databaseCompiler.Validate(createTableDTO, cancellationToken);
+                string validationError = await _databaseCompiler.Validate(createTableDTO, cancellationToken);
 
                 // If a validation error message exists, add it to the context.
                 if (!string.IsNullOrWhiteSpace(validationError))

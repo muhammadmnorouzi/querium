@@ -3,7 +3,7 @@ using Arian.Quantiq.Domain.Entities;
 using Arian.Quantiq.Domain.Interfaces;
 using MediatR;
 
-namespace Arian.Quantiq.Application.Features.SQLTable.Notifications.TableCreated;
+namespace Arian.Quantiq.Application.Features.TableManagement.Notifications.TableCreated;
 
 public class TableCreatedNotificationHandler(
     IUserContextService userContextService,

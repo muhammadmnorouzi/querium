@@ -1,4 +1,4 @@
-﻿using Arian.Quantiq.Application.DTOs;
+﻿using Arian.Quantiq.Application.DTOs.TableManagement;
 using Arian.Quantiq.Domain.Common.Results;
 
 namespace Arian.Quantiq.Application.Interfaces;

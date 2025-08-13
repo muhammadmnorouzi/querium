@@ -22,9 +22,4 @@
 	  <ProjectReference Include="..\Arian.Quantiq.Application\Arian.Quantiq.Application.csproj" />
 	  <ProjectReference Include="..\Arian.Quantiq.Infrastructure\Arian.Quantiq.Infrastructure.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\TableManagement\" />
-  </ItemGroup>
-
 </Project>

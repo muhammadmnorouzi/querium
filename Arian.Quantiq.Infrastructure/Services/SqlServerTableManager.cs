@@ -1,4 +1,4 @@
-﻿using Arian.Quantiq.Application.DTOs;
+﻿using Arian.Quantiq.Application.DTOs.TableManagement;
 using Arian.Quantiq.Application.Interfaces;
 using Arian.Quantiq.Domain.Common.Results;
 using Arian.Quantiq.Domain.Interfaces;
@@ -51,11 +51,11 @@ public class SqlServerTableManager(
         // Step 3: Execute the SQL query against the database.
         try
         {
-            await using (var connection = new SqlConnection(userConnectionString))
+            await using (SqlConnection connection = new(userConnectionString))
             {
                 await connection.OpenAsync(cancellationToken);
 
-                await using var command = new SqlCommand(tableCreationQuery, connection);
+                await using SqlCommand command = new(tableCreationQuery, connection);
                 // Ensure the command timeout is sufficient for a schema change.
                 command.CommandTimeout = 60;
                 await command.ExecuteNonQueryAsync(cancellationToken);

@@ -1,5 +1,5 @@
-﻿using Arian.Quantiq.Application.DTOs;
-using Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
+﻿using Arian.Quantiq.Application.DTOs.TableManagement;
+using Arian.Quantiq.Application.Features.TableManagement.Commands.CreateTable;
 using Arian.Quantiq.Domain.Common.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

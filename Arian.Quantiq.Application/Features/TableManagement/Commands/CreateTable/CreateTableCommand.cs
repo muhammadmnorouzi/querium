@@ -1,8 +1,8 @@
-﻿using Arian.Quantiq.Application.DTOs;
+﻿using Arian.Quantiq.Application.DTOs.TableManagement;
 using Arian.Quantiq.Domain.Common.Results;
 using MediatR;
 
-namespace Arian.Quantiq.Application.Features.SQLTable.Commands.CreateTable;
+namespace Arian.Quantiq.Application.Features.TableManagement.Commands.CreateTable;
 
 /// <summary>
 /// Represents a command to create a new table in the database.

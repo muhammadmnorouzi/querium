@@ -1,4 +1,4 @@
-﻿namespace Arian.Quantiq.Application.DTOs;
+﻿namespace Arian.Quantiq.Application.DTOs.TableManagement;
 
 /// <summary>
 /// Represents the complete abstract structure for a new table to be created.
