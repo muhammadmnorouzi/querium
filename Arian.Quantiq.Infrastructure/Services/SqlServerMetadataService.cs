@@ -9,7 +9,7 @@ namespace Arian.Quantiq.Infrastructure.Services;
 /// An implementation of <see cref="ITableMetadataService"/> for SQL Server.
 /// This would query the INFORMATION_SCHEMA.COLUMNS view.
 /// </summary>
-public class SqlServerMetadataService(IDbConnection dbConnection) : ITableMetadataService
+public class SqlServerMetadataService() : ITableMetadataService
 {
     /// <summary>
     /// Gets the metadata for all columns in a specified table by querying the database.
@@ -17,9 +17,11 @@ public class SqlServerMetadataService(IDbConnection dbConnection) : ITableMetada
     /// <param name="tableName">The name of the table.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation.</param>
     /// <returns>A list of <see cref="ColumnMetadata"/> objects.</returns>
-    public async Task<List<ColumnMetadata>> GetTableColumnsAsync(string tableName, CancellationToken cancellationToken = default)
+    public async Task<List<ColumnMetadata>> GetTableColumnsAsync(string tableName, string connectionString, CancellationToken cancellationToken = default)
     {
-        var columns = new List<ColumnMetadata>();
+        IDbConnection dbConnection = new SqlConnection(connectionString);
+
+        List<ColumnMetadata> columns = [];
 
         string query = @"
             SELECT 
@@ -34,7 +36,7 @@ public class SqlServerMetadataService(IDbConnection dbConnection) : ITableMetada
             WHERE 
                 TABLE_NAME = @TableName;";
 
-        await using (var command = (SqlCommand)dbConnection.CreateCommand())
+        await using (SqlCommand command = (SqlCommand)dbConnection.CreateCommand())
         {
             command.CommandText = query;
             command.Parameters.AddWithValue("@TableName", tableName);
@@ -45,7 +47,7 @@ public class SqlServerMetadataService(IDbConnection dbConnection) : ITableMetada
                 dbConnection.Open();
             }
 
-            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            await using SqlDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
             while (await reader.ReadAsync(cancellationToken))
             {
                 columns.Add(new ColumnMetadata

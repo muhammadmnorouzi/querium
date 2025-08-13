@@ -482,4 +482,4 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
-/Arian.Quantiq.Infrastructure/Persistence/EF/Migrations/**
+/Arian.Quantiq.Infrastructure/Persistence/EFCore/Migrations/**

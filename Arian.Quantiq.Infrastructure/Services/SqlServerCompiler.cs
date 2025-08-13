@@ -126,7 +126,7 @@ public class SqlServerCompiler : IDatabaseCompiler
                     return $"Column '{update.OldName}' does not exist.";
                 }
                 // Check for dependencies or constraints on the column (not implemented here but essential).
-                #warning TODO
+#warning TODO
                 droppedColumns.Add(update.OldName);
             }
             else if (update.Operation == UpdateOperationType.Alter || update.Operation == UpdateOperationType.Rename)

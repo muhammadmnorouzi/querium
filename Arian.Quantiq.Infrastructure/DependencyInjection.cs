@@ -1,7 +1,7 @@
 ﻿using Arian.Quantiq.Application.Interfaces;
 using Arian.Quantiq.Domain.Entities.Identity;
 using Arian.Quantiq.Domain.Interfaces;
-using Arian.Quantiq.Infrastructure.Persistence.EF;
+using Arian.Quantiq.Infrastructure.Persistence.EFCore;
 using Arian.Quantiq.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -32,6 +32,8 @@ public static class DependencyInjection
         _ = services.AddScoped<ISQLTableManager, SqlServerTableManager>();
         _ = services.AddScoped<IDatabaseCompiler, SqlServerCompiler>();
         _ = services.AddScoped<ITableDefinitionRepository, EFTableDefinitionRepository>();
+        _ = services.AddScoped<ITableMetadataService, SqlServerMetadataService>();
+        _ = services.AddScoped<IExcelService, ExcelService>();
 
         _ = services.AddScoped<IEmailSender, NullEmailSender>();
         return services;

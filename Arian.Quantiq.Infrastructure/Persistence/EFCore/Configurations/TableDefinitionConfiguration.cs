@@ -3,7 +3,7 @@ using Arian.Quantiq.Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Arian.Quantiq.Infrastructure.Persistence.EF.Configurations;
+namespace Arian.Quantiq.Infrastructure.Persistence.EFCore.Configurations;
 
 public class TableDefinitionConfiguration : IEntityTypeConfiguration<TableDefinition>
 {

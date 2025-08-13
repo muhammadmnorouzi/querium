@@ -9,13 +9,10 @@
 	<ItemGroup>
 	  <Compile Remove="Features\TableManagement\Commands\DeleteTable\**" />
 	  <Compile Remove="Features\TableManagement\Commands\UploadExcel\**" />
-	  <Compile Remove="Features\TableManagement\Queries\**" />
 	  <EmbeddedResource Remove="Features\TableManagement\Commands\DeleteTable\**" />
 	  <EmbeddedResource Remove="Features\TableManagement\Commands\UploadExcel\**" />
-	  <EmbeddedResource Remove="Features\TableManagement\Queries\**" />
 	  <None Remove="Features\TableManagement\Commands\DeleteTable\**" />
 	  <None Remove="Features\TableManagement\Commands\UploadExcel\**" />
-	  <None Remove="Features\TableManagement\Queries\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -23,7 +20,6 @@
 		<PackageReference Include="FluentValidation" Version="12.0.0" />
 		<PackageReference Include="MediatR" Version="13.0.0" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
-		<PackageReference Include="SqlKata" Version="4.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>

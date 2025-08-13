@@ -1,5 +1,4 @@
 ﻿using Arian.Quantiq.Application.DTOs;
-using System.Data.Common;
 
 namespace Arian.Quantiq.Application.Interfaces;
 
@@ -14,5 +13,5 @@ public interface ITableMetadataService
     /// <param name="tableName">The name of the table.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation.</param>
     /// <returns>A list of <see cref="ColumnMetadata"/> objects.</returns>
-    Task<List<ColumnMetadata>> GetTableColumnsAsync(string tableName, CancellationToken cancellationToken = default);
+    Task<List<ColumnMetadata>> GetTableColumnsAsync(string tableName, string connectionString, CancellationToken cancellationToken = default);
 }
