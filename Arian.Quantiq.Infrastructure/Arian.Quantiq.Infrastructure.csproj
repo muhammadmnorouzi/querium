@@ -27,8 +27,4 @@
 	  <ProjectReference Include="..\Arian.Quantiq.Application\Arian.Quantiq.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persistence\EFCore\Migrations\" />
-  </ItemGroup>
-
 </Project>

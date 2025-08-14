@@ -1,6 +1,5 @@
 ﻿using Arian.Quantiq.Application.Interfaces;
 using Arian.Quantiq.Domain.Entities;
-using Arian.Quantiq.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

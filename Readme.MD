@@ -90,6 +90,7 @@ This will create the necessary `TableDefinitions` table and other internal schem
 ## 📝 TODO List
 
 * SQL Injection attacks should be considered, [parametric query generation and execution]
+* Generated Excel template file should have its header locked!
 * Implement a complete table update logic that supports `ALTER TABLE` operations (add, alter, drop, rename).
 * Implement more advanced validation rules to prevent a user from dropping a column with a foreign key or a primary key.
 * Create a front-end UI for a richer user experience, allowing users to visually build and modify tables.
