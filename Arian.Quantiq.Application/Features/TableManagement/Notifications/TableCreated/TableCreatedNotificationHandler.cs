@@ -2,25 +2,27 @@
 using Arian.Quantiq.Domain.Entities;
 using Arian.Quantiq.Domain.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Arian.Quantiq.Application.Features.TableManagement.Notifications.TableCreated;
 
 public class TableCreatedNotificationHandler(
-    IUserContextService userContextService,
-    ITableDefinitionRepository tableDefinitionRepository) : INotificationHandler<TableCreatedNotification>
+    ITableDefinitionRepository tableDefinitionRepository,
+    ILogger<TableCreatedNotificationHandler> logger) : INotificationHandler<TableCreatedNotification>
 {
     public async Task Handle(TableCreatedNotification notification, CancellationToken cancellationToken)
     {
-        string userId = await userContextService.GetUserIdAsync();
-        Guid userIdGuid = Guid.Parse(userId);
-
         TableDefinition tableDefinitionToAdd = new()
         {
             TableName = notification.TableName,
-            CreatedByUserId = userIdGuid,
         };
 
         await tableDefinitionRepository.Add(tableDefinitionToAdd, cancellationToken);
         bool changesSaved = await tableDefinitionRepository.SaveChanges(cancellationToken);
+
+        if (!changesSaved)
+        {
+            logger.LogError("Failed to save changes for table definition: {TableName}", notification.TableName);
+        }
     }
 }

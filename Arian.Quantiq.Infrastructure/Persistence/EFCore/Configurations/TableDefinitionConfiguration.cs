@@ -1,5 +1,4 @@
 ﻿using Arian.Quantiq.Domain.Entities;
-using Arian.Quantiq.Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -16,7 +15,7 @@ public class TableDefinitionConfiguration : IEntityTypeConfiguration<TableDefini
         builder.HasIndex(x => x.TableName)
             .IsUnique();
 
-        builder.HasOne<ApplicationUser>()
+        builder.HasOne(x => x.CreatedBy)
             .WithMany()
             .HasForeignKey(x => x.CreatedByUserId)
             .IsRequired();

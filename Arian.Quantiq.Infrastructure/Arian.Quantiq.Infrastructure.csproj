@@ -20,10 +20,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.8" />
+    <PackageReference Include="SpreadsheetLight" Version="3.5.0" />
   </ItemGroup>
 
   <ItemGroup>
 	  <ProjectReference Include="..\Arian.Quantiq.Application\Arian.Quantiq.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Persistence\EFCore\Migrations\" />
   </ItemGroup>
 
 </Project>
