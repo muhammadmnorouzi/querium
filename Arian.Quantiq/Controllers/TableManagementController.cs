@@ -8,14 +8,13 @@ using Arian.Quantiq.Domain.Common.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 namespace Arian.Quantiq.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TableManagementController(IMediator mediator) : Controller
+public partial class TableManagementController(IMediator mediator) : Controller
 {
     [HttpPost]
     [Authorize]
@@ -71,54 +70,30 @@ public class TableManagementController(IMediator mediator) : Controller
     [ProducesResponseType(typeof(ApplicationResult<DynamicTableDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApplicationResult<DynamicTableDTO>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApplicationResult<DynamicTableDTO>), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UploadExcel([FromForm] UploadExcelDTO input, CancellationToken cancellationToken)
+    public async Task<ApplicationResult<DynamicTableDTO>> UploadExcel([FromForm] UploadExcelDTO input, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(input.TableName))
         {
-            return BadRequest("TableName cannot be null or empty.");
+            return (new ErrorContainer("TableName cannot be null or empty."), HttpStatusCode.BadGateway);
         }
 
         if (input.ExcelFile == null || input.ExcelFile.Length == 0)
         {
-            return BadRequest("Excel file is required and cannot be empty.");
+            return (new ErrorContainer("Excel file is required and cannot be empty."), HttpStatusCode.BadGateway);
         }
 
-        try
+        using MemoryStream stream = new();
+        await input.ExcelFile.CopyToAsync(stream, cancellationToken);
+
+        UploadExcelCommand command = new()
         {
-            using MemoryStream stream = new();
-            await input.ExcelFile.CopyToAsync(stream, cancellationToken);
+            TableName = input.TableName,
+            ExcelFileStream = stream
+        };
 
-            UploadExcelCommand command = new()
-            {
-                TableName = input.TableName,
-                ExcelFileStream = stream
-            };
+        ApplicationResult<DynamicTableDTO> result = await mediator.Send(command, cancellationToken);
 
-            ApplicationResult<DynamicTableDTO> result = await mediator.Send(command, cancellationToken);
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result.Error);
-            }
+        return result;
 
-            return Ok(result.Data);
-        }
-        catch (ValidationException ex)
-        {
-            return BadRequest(ex);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                $"An error occurred while processing the Excel file: {ex.Message}");
-        }
-    }
-
-    public record UploadExcelDTO
-    {
-        [Required]
-        public string TableName { get; init; } = string.Empty;
-
-        [Required]
-        public IFormFile ExcelFile { get; set; } = null!;
     }
 }
