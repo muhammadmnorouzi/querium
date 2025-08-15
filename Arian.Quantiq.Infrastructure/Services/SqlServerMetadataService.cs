@@ -19,32 +19,41 @@ public class SqlServerMetadataService() : ITableMetadataService
     /// <returns>A list of <see cref="ColumnMetadata"/> objects.</returns>
     public async Task<IReadOnlyList<ColumnMetadata>> GetTableColumnsAsync(string tableName, string connectionString, CancellationToken cancellationToken = default)
     {
-        IDbConnection dbConnection = new SqlConnection(connectionString);
-
-        List<ColumnMetadata> columns = [];
+        using SqlConnection dbConnection = new SqlConnection(connectionString);
+        List<ColumnMetadata> columns = new();
 
         string query = @"
             SELECT 
-                COLUMN_NAME, 
-                DATA_TYPE,
-                CHARACTER_MAXIMUM_LENGTH,
-                NUMERIC_PRECISION,
-                NUMERIC_SCALE,
-                IS_NULLABLE
+                c.COLUMN_NAME, 
+                c.DATA_TYPE,
+                c.CHARACTER_MAXIMUM_LENGTH,
+                c.NUMERIC_PRECISION,
+                c.NUMERIC_SCALE,
+                c.IS_NULLABLE,
+                sc.is_identity,
+                CASE WHEN pk.CONSTRAINT_TYPE = 'PRIMARY KEY' THEN 1 ELSE 0 END AS is_primary_key
             FROM 
-                INFORMATION_SCHEMA.COLUMNS
+                INFORMATION_SCHEMA.COLUMNS c
+            LEFT JOIN sys.columns sc 
+                ON OBJECT_ID(c.TABLE_NAME) = sc.object_id 
+                AND c.COLUMN_NAME = sc.name
+            LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu
+                ON c.TABLE_NAME = kcu.TABLE_NAME
+                AND c.COLUMN_NAME = kcu.COLUMN_NAME
+            LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS pk
+                ON kcu.CONSTRAINT_NAME = pk.CONSTRAINT_NAME
+                AND pk.CONSTRAINT_TYPE = 'PRIMARY KEY'
             WHERE 
-                TABLE_NAME = @TableName;";
+                c.TABLE_NAME = @TableName
+                AND c.TABLE_SCHEMA = 'dbo';";
 
-        await using (SqlCommand command = (SqlCommand)dbConnection.CreateCommand())
+        await using (SqlCommand command = new(query, dbConnection))
         {
-            command.CommandText = query;
             command.Parameters.AddWithValue("@TableName", tableName);
 
-            // Ensure the connection is open if it's not already.
             if (dbConnection.State != ConnectionState.Open)
             {
-                dbConnection.Open();
+                await dbConnection.OpenAsync(cancellationToken);
             }
 
             await using SqlDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
@@ -54,11 +63,12 @@ public class SqlServerMetadataService() : ITableMetadataService
                 {
                     Name = reader["COLUMN_NAME"].ToString()!,
                     DataType = reader["DATA_TYPE"].ToString()!,
-                    // These are nullable in the database, so we check for DBNull.
                     Length = reader["CHARACTER_MAXIMUM_LENGTH"] as int?,
                     Precision = reader["NUMERIC_PRECISION"] as int?,
                     Scale = reader["NUMERIC_SCALE"] as int?,
-                    IsNullable = reader["IS_NULLABLE"].ToString() == "YES"
+                    IsNullable = reader["IS_NULLABLE"].ToString() == "YES",
+                    IsAutoIncrementing = reader.GetBoolean(reader.GetOrdinal("is_identity")),
+                    IsPrimaryKey = reader.GetInt32(reader.GetOrdinal("is_primary_key")) == 1
                 });
             }
         }

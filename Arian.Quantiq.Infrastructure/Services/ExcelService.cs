@@ -3,8 +3,14 @@ using Arian.Quantiq.Application.Enums;
 using Arian.Quantiq.Application.Interfaces;
 using Arian.Quantiq.Domain.Common.Results;
 using SpreadsheetLight;
-using System.Globalization;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Arian.Quantiq.Infrastructure.Services;
 
@@ -12,7 +18,6 @@ public class ExcelService : IExcelService
 {
     private const string WorksheetName = "Data Input";
 
-    #region GenerateExcelTemplate
     public MemoryStream GenerateExcelTemplate(IReadOnlyList<ColumnMetadata> columns)
     {
         if (columns == null)
@@ -29,15 +34,15 @@ public class ExcelService : IExcelService
         document.SelectWorksheet("Sheet1");
         document.RenameWorksheet("Sheet1", WorksheetName);
 
-        for (int i = 0; i < columns.Count; i++)
+        int headerIndex = 0;
+        foreach (ColumnMetadata column in columns.Where(c => !c.IsAutoIncrementing))
         {
-            ColumnMetadata column = columns[i];
             if (string.IsNullOrWhiteSpace(column.Name))
             {
-                throw new ArgumentException($"Column name at index {i} cannot be null or empty.", nameof(columns));
+                throw new ArgumentException($"Column name at index {headerIndex} cannot be null or empty.", nameof(columns));
             }
 
-            string cell = $"{GetExcelColumnName(i + 1)}1";
+            string cell = $"{GetExcelColumnName(headerIndex + 1)}1";
             document.SetCellValue(cell, column.Name);
 
             SLStyle headerStyle = document.CreateStyle();
@@ -45,20 +50,22 @@ public class ExcelService : IExcelService
             headerStyle.Fill.SetPattern(DocumentFormat.OpenXml.Spreadsheet.PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.Transparent);
             headerStyle.Protection.Locked = true;
             document.SetCellStyle(cell, headerStyle);
+
+            headerIndex++;
         }
 
-        for (int i = 0; i < columns.Count; i++)
+        int dataIndex = 0;
+        foreach (ColumnMetadata column in columns.Where(c => !c.IsAutoIncrementing))
         {
-            ColumnMetadata column = columns[i];
-            string columnName = GetExcelColumnName(i + 1);
+            string columnName = GetExcelColumnName(dataIndex + 1);
             string dataRange = $"{columnName}2:{columnName}1048576";
 
             SLStyle columnStyle = document.CreateStyle();
             columnStyle.Protection.Locked = false;
-            document.SetColumnStyle(i + 1, columnStyle);
+            document.SetColumnStyle(dataIndex + 1, columnStyle);
 
             string normalizedDataType = NormalizeDataType(column.DataType);
-            if (!Enum.TryParse(normalizedDataType, true, out ColumnDataType dataType))
+            if (!Enum.TryParse<ColumnDataType>(normalizedDataType, true, out ColumnDataType dataType))
             {
                 throw new ArgumentException($"Invalid data type '{column.DataType}' for column '{column.Name}'.", nameof(columns));
             }
@@ -98,6 +105,8 @@ public class ExcelService : IExcelService
                     }
                     break;
             }
+
+            dataIndex++;
         }
 
         document.ProtectWorksheet(new SLSheetProtection()
@@ -162,13 +171,12 @@ public class ExcelService : IExcelService
         }
         return columnName;
     }
-    #endregion
 
     public async Task<ApplicationResult<DynamicTableDTO>> ExcelToDynamicData(
-            MemoryStream excelFileStream,
-            IReadOnlyList<ColumnMetadata> columnsMetadata,
-            string tableName,
-            CancellationToken cancellationToken = default)
+        MemoryStream excelFileStream,
+        IReadOnlyList<ColumnMetadata> columnsMetadata,
+        string tableName,
+        CancellationToken cancellationToken = default)
     {
         var errorContainer = new ErrorContainer();
 
@@ -235,26 +243,36 @@ public class ExcelService : IExcelService
                 headers.RemoveAll(h => invalidHeaders.Contains(h, StringComparer.OrdinalIgnoreCase));
             }
 
+            // Only include headers for non-auto-incrementing columns in rows
+            var validHeaders = headers
+                .Where(h => columnsMetadata.Any(c => c.Name.Equals(h, StringComparison.OrdinalIgnoreCase) && !c.IsAutoIncrementing))
+                .ToList();
+
             var missingRequiredColumns = columnsMetadata
-                .Where(c => !c.IsNullable && !headers.Contains(c.Name, StringComparer.OrdinalIgnoreCase))
+                .Where(c => !c.IsNullable && !c.IsAutoIncrementing && !validHeaders.Any(h => h.Equals(c.Name, StringComparison.OrdinalIgnoreCase)))
                 .Select(c => c.Name)
                 .ToList();
             if (missingRequiredColumns.Any())
             {
                 errorContainer.AddError($"Missing required columns: {string.Join(", ", missingRequiredColumns)}.");
+                return (errorContainer, HttpStatusCode.BadRequest);
             }
 
             var rows = new Dictionary<string, IList<object?>>(StringComparer.OrdinalIgnoreCase);
-            foreach (var header in headers)
+            foreach (var header in validHeaders)
             {
-                rows[header] = [];
+                rows[header] = new List<object?>();
             }
 
             int rowIndex = 2;
             bool hasData = false;
+            var validationErrors = new List<string>();
+
             while (true)
             {
                 bool rowHasData = false;
+                var tempRowValues = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+
                 foreach (var header in headers)
                 {
                     var cellValue = document.GetCellValueAsString(rowIndex, headers.IndexOf(header) + 1);
@@ -262,8 +280,8 @@ public class ExcelService : IExcelService
                     {
                         rowHasData = true;
                         hasData = true;
-                        break;
                     }
+                    tempRowValues[header] = cellValue;
                 }
 
                 if (!rowHasData)
@@ -271,30 +289,50 @@ public class ExcelService : IExcelService
                     break;
                 }
 
-                for (int i = 0; i < headers.Count; i++)
+                bool rowIsValid = true;
+                var rowValues = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var header in validHeaders)
                 {
-                    var header = headers[i];
                     var columnMetadata = columnsMetadata.FirstOrDefault(c => c.Name.Equals(header, StringComparison.OrdinalIgnoreCase));
                     if (columnMetadata == null)
                     {
                         continue;
                     }
 
-                    var cellValue = document.GetCellValueAsString(rowIndex, i + 1);
+                    var cellValue = tempRowValues[header]?.ToString();
                     object? value = null;
 
                     if (!string.IsNullOrWhiteSpace(cellValue))
                     {
                         value = ParseCellValue(cellValue, columnMetadata, header, rowIndex, errorContainer);
+                        if (value == null)
+                        {
+                            rowIsValid = false;
+                        }
                     }
-
-                    if (value == null && !columnMetadata.IsNullable)
+                    else if (!columnMetadata.IsNullable)
                     {
                         errorContainer.AddError($"Value for non-nullable column '{header}' at row {rowIndex} cannot be null.");
-                        value = GetDefaultValue(columnMetadata.DataType);
+                        rowIsValid = false;
                     }
 
-                    rows[header].Add(value);
+                    if (rowIsValid)
+                    {
+                        rowValues[header] = value;
+                    }
+                }
+
+                if (!rowIsValid)
+                {
+                    validationErrors.Add($"Invalid data in row {rowIndex}.");
+                }
+                else
+                {
+                    foreach (var header in validHeaders)
+                    {
+                        rows[header].Add(rowValues[header]);
+                    }
                 }
 
                 rowIndex++;
@@ -306,7 +344,13 @@ public class ExcelService : IExcelService
                 return (errorContainer, HttpStatusCode.BadRequest);
             }
 
-            int rowCount = rows.First().Value.Count;
+            if (validationErrors.Any())
+            {
+                errorContainer.AddError($"Data validation failed: {string.Join(" ", validationErrors)}");
+                return (errorContainer, HttpStatusCode.BadRequest);
+            }
+
+            int rowCount = rows.Any() ? rows.First().Value.Count : 0;
             var inconsistentColumns = rows.Where(r => r.Value.Count != rowCount).Select(r => r.Key).ToList();
             if (inconsistentColumns.Any())
             {
@@ -334,8 +378,6 @@ public class ExcelService : IExcelService
             errorContainer.AddError($"Error processing Excel file: {ex.Message}");
             return (errorContainer, HttpStatusCode.BadRequest);
         }
-
-        await Task.CompletedTask;
     }
 
     private object? ParseCellValue(string cellValue, ColumnMetadata columnMetadata, string columnName, int rowIndex, ErrorContainer errorContainer)
@@ -350,7 +392,7 @@ public class ExcelService : IExcelService
         switch (dataType)
         {
             case ColumnDataType.Integer:
-                if (int.TryParse(cellValue, out int intValue))
+                if (int.TryParse(cellValue, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue))
                 {
                     return intValue;
                 }
@@ -360,21 +402,25 @@ public class ExcelService : IExcelService
             case ColumnDataType.Decimal:
                 if (decimal.TryParse(cellValue, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal decimalValue) && IsValidDecimal(decimalValue, columnMetadata.Precision, columnMetadata.Scale))
                 {
-                    return decimalValue;
+                    if (columnMetadata.IsNullable || decimalValue != 0)
+                    {
+                        return decimalValue;
+                    }
+                    errorContainer.AddError($"Non-nullable column '{columnName}' at row {rowIndex} cannot be 0.");
+                    return null;
                 }
                 errorContainer.AddError($"Expected decimal with precision {columnMetadata.Precision} and scale {columnMetadata.Scale} for column '{columnName}' at row {rowIndex}, got '{cellValue}'.");
                 return null;
 
             case ColumnDataType.DateTime:
-                // Try parsing as Excel serial date (numeric)
                 if (double.TryParse(cellValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double serialDate))
                 {
                     try
                     {
-                        DateTime dateValue1 = DateTime.FromOADate(serialDate);
-                        if (dateValue1 >= new DateTime(1753, 1, 1) && dateValue1 <= new DateTime(9999, 12, 31, 23, 59, 59))
+                        DateTime serialDateValue = DateTime.FromOADate(serialDate);
+                        if (serialDateValue >= new DateTime(1753, 1, 1) && serialDateValue <= new DateTime(9999, 12, 31, 23, 59, 59))
                         {
-                            return dateValue1;
+                            return serialDateValue;
                         }
                         errorContainer.AddError($"Date '{cellValue}' for column '{columnName}' at row {rowIndex} is outside SQL Server's valid range (1753-01-01 to 9999-12-31).");
                         return null;
@@ -385,13 +431,12 @@ public class ExcelService : IExcelService
                         return null;
                     }
                 }
-                // Try parsing as string date
                 string[] dateFormats = { "yyyy/MM/dd", "yyyy-MM-dd", "MM/dd/yyyy", "yyyy/M/d", "M/d/yyyy" };
-                if (DateTime.TryParseExact(cellValue, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateValue))
+                if (DateTime.TryParseExact(cellValue, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDateValue))
                 {
-                    if (dateValue >= new DateTime(1753, 1, 1) && dateValue <= new DateTime(9999, 12, 31, 23, 59, 59))
+                    if (parsedDateValue >= new DateTime(1753, 1, 1) && parsedDateValue <= new DateTime(9999, 12, 31, 23, 59, 59))
                     {
-                        return dateValue;
+                        return parsedDateValue;
                     }
                     errorContainer.AddError($"Date '{cellValue}' for column '{columnName}' at row {rowIndex} is outside SQL Server's valid range (1753-01-01 to 9999-12-31).");
                 }
@@ -406,7 +451,6 @@ public class ExcelService : IExcelService
                 {
                     return boolValue;
                 }
-                // Handle Excel 1/0 for booleans
                 if (cellValue == "1") return true;
                 if (cellValue == "0") return false;
                 errorContainer.AddError($"Expected boolean for column '{columnName}' at row {rowIndex}, got '{cellValue}'.");

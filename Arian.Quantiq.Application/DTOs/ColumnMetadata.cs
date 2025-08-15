@@ -12,4 +12,6 @@ public class ColumnMetadata
     public int? Precision { get; init; }
     public int? Scale { get; init; }
     public bool IsNullable { get; init; }
+    public bool IsAutoIncrementing { get; init; }
+    public bool IsPrimaryKey { get; init; }
 }
