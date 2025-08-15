@@ -4,12 +4,16 @@ using FluentValidation;
 namespace Arian.Quantiq.Application.Features.TableManagement.Commands.CreateTable;
 
 /// <summary>
-/// Validator for <see cref="CreateTableCommand"/>.
+/// Validator for <see cref="CreateTableCommand"/>. Validates the table creation request using the provided database compiler.
 /// </summary>
 public class CreateTableCommandValidator : AbstractValidator<CreateTableCommand>
 {
     private readonly IDatabaseCompiler _databaseCompiler;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CreateTableCommandValidator"/> class.
+    /// </summary>
+    /// <param name="databaseCompiler">The database compiler used for additional validation.</param>
     public CreateTableCommandValidator(IDatabaseCompiler databaseCompiler)
     {
         // Store the compiler in a private field.

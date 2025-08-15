@@ -11,13 +11,35 @@ using System.Net;
 
 namespace Arian.Quantiq.Application.Features.TableManagement.Queries.DownloadEmptyExcel;
 
-public class DownloadEmptyExcelQueryHandler(
-    ITableDefinitionRepository tableDefinitionRepository,
-    IExcelService excelService,
-    ITableMetadataService tableMetadataService,
-    IUserContextService userContextService,
-    IValidator<DownloadEmptyExcelQuery> validator) : IRequestHandler<DownloadEmptyExcelQuery, ApplicationResult<MemoryStream>>
+/// <summary>
+/// Handles the <see cref="DownloadEmptyExcelQuery"/> to generate and return an Excel template for a table.
+/// </summary>
+public class DownloadEmptyExcelQueryHandler : IRequestHandler<DownloadEmptyExcelQuery, ApplicationResult<MemoryStream>>
 {
+    private readonly ITableDefinitionRepository tableDefinitionRepository;
+    private readonly IExcelService excelService;
+    private readonly ITableMetadataService tableMetadataService;
+    private readonly IUserContextService userContextService;
+    private readonly IValidator<DownloadEmptyExcelQuery> validator;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DownloadEmptyExcelQueryHandler"/> class.
+    /// </summary>
+    public DownloadEmptyExcelQueryHandler(
+        ITableDefinitionRepository tableDefinitionRepository,
+        IExcelService excelService,
+        ITableMetadataService tableMetadataService,
+        IUserContextService userContextService,
+        IValidator<DownloadEmptyExcelQuery> validator)
+    {
+        this.tableDefinitionRepository = tableDefinitionRepository;
+        this.excelService = excelService;
+        this.tableMetadataService = tableMetadataService;
+        this.userContextService = userContextService;
+        this.validator = validator;
+    }
+
+    /// <inheritdoc />
     public async Task<ApplicationResult<MemoryStream>> Handle(DownloadEmptyExcelQuery request, CancellationToken cancellationToken)
     {
         ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
