@@ -165,10 +165,10 @@ public class ExcelService : IExcelService
     #endregion
 
     public async Task<ApplicationResult<DynamicTableDTO>> ExcelToDynamicData(
-        MemoryStream excelFileStream,
-        IReadOnlyList<ColumnMetadata> columnsMetadata,
-        string tableName,
-        CancellationToken cancellationToken = default)
+            MemoryStream excelFileStream,
+            IReadOnlyList<ColumnMetadata> columnsMetadata,
+            string tableName,
+            CancellationToken cancellationToken = default)
     {
         var errorContainer = new ErrorContainer();
 
@@ -323,7 +323,7 @@ public class ExcelService : IExcelService
 
             var result = new DynamicTableDTO
             {
-                TableName = tableName, // Use provided tableName
+                TableName = tableName,
                 Rows = rows
             };
 
@@ -334,6 +334,8 @@ public class ExcelService : IExcelService
             errorContainer.AddError($"Error processing Excel file: {ex.Message}");
             return (errorContainer, HttpStatusCode.BadRequest);
         }
+
+        await Task.CompletedTask;
     }
 
     private object? ParseCellValue(string cellValue, ColumnMetadata columnMetadata, string columnName, int rowIndex, ErrorContainer errorContainer)
@@ -356,7 +358,7 @@ public class ExcelService : IExcelService
                 return null;
 
             case ColumnDataType.Decimal:
-                if (decimal.TryParse(cellValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal decimalValue) && IsValidDecimal(decimalValue, columnMetadata.Precision, columnMetadata.Scale))
+                if (decimal.TryParse(cellValue, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal decimalValue) && IsValidDecimal(decimalValue, columnMetadata.Precision, columnMetadata.Scale))
                 {
                     return decimalValue;
                 }
@@ -364,6 +366,26 @@ public class ExcelService : IExcelService
                 return null;
 
             case ColumnDataType.DateTime:
+                // Try parsing as Excel serial date (numeric)
+                if (double.TryParse(cellValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double serialDate))
+                {
+                    try
+                    {
+                        DateTime dateValue1 = DateTime.FromOADate(serialDate);
+                        if (dateValue1 >= new DateTime(1753, 1, 1) && dateValue1 <= new DateTime(9999, 12, 31, 23, 59, 59))
+                        {
+                            return dateValue1;
+                        }
+                        errorContainer.AddError($"Date '{cellValue}' for column '{columnName}' at row {rowIndex} is outside SQL Server's valid range (1753-01-01 to 9999-12-31).");
+                        return null;
+                    }
+                    catch (ArgumentException)
+                    {
+                        errorContainer.AddError($"Invalid Excel serial date '{cellValue}' for column '{columnName}' at row {rowIndex}.");
+                        return null;
+                    }
+                }
+                // Try parsing as string date
                 string[] dateFormats = { "yyyy/MM/dd", "yyyy-MM-dd", "MM/dd/yyyy", "yyyy/M/d", "M/d/yyyy" };
                 if (DateTime.TryParseExact(cellValue, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateValue))
                 {
@@ -384,6 +406,9 @@ public class ExcelService : IExcelService
                 {
                     return boolValue;
                 }
+                // Handle Excel 1/0 for booleans
+                if (cellValue == "1") return true;
+                if (cellValue == "0") return false;
                 errorContainer.AddError($"Expected boolean for column '{columnName}' at row {rowIndex}, got '{cellValue}'.");
                 return null;
 
@@ -408,7 +433,7 @@ public class ExcelService : IExcelService
             return true;
         }
 
-        string decStr = value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        string decStr = value.ToString(CultureInfo.InvariantCulture);
         string[] parts = decStr.Split('.');
         int totalDigits = parts[0].TrimStart('-').Length + (parts.Length > 1 ? parts[1].Length : 0);
         int decimalPlaces = parts.Length > 1 ? parts[1].Length : 0;
