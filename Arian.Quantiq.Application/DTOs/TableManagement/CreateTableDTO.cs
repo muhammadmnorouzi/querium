@@ -1,7 +1,7 @@
 ﻿namespace Arian.Quantiq.Application.DTOs.TableManagement;
 
 /// <summary>
-/// Represents the complete abstract structure for a new table to be created.
+/// Represents the complete abstract structure for a new table to be created, including its name and columns.
 /// </summary>
 public class CreateTableDTO
 {

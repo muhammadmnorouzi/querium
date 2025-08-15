@@ -1,15 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Arian.Quantiq.Application.DTOs;
 
-public partial class TableManagementController
+/// <summary>
+/// Represents the data required to upload an Excel file for a table.
+/// </summary>
+public record UploadExcelDTO
 {
-    public record UploadExcelDTO
-    {
-        [Required]
-        public string TableName { get; init; } = string.Empty;
+    /// <summary>
+    /// Gets the name of the table to which the Excel data will be uploaded.
+    /// </summary>
+    [Required]
+    public string TableName { get; init; } = string.Empty;
 
-        [Required]
-        public IFormFile ExcelFile { get; set; } = null!;
-    }
+    /// <summary>
+    /// Gets the Excel file to be uploaded.
+    /// </summary>
+    [Required]
+    public IFormFile ExcelFile { get; set; } = null!;
 }
