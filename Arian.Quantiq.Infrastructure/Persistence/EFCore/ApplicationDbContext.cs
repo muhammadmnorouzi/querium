@@ -25,7 +25,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     private async Task UpdateAuditingFieldsAsync(CancellationToken cancellationToken)
     {
-        var entries = ChangeTracker.Entries<EntityBase>()
+        IEnumerable<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<EntityBase>> entries = ChangeTracker.Entries<EntityBase>()
             .Where(e => e.State == EntityState.Added);
 
         string currentUserId = await serviceProvider.GetRequiredService<IUserContextService>().GetUserIdAsync();
@@ -34,7 +34,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             ? guidUserId
             : null;
 
-        foreach (var entry in entries)
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<EntityBase>? entry in entries)
         {
             entry.Entity.CreatedByUserId = guidUserId;
         }

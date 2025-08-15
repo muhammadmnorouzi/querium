@@ -17,7 +17,7 @@ public class SqlServerMetadataService() : ITableMetadataService
     /// <param name="tableName">The name of the table.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation.</param>
     /// <returns>A list of <see cref="ColumnMetadata"/> objects.</returns>
-    public async Task<List<ColumnMetadata>> GetTableColumnsAsync(string tableName, string connectionString, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<ColumnMetadata>> GetTableColumnsAsync(string tableName, string connectionString, CancellationToken cancellationToken = default)
     {
         IDbConnection dbConnection = new SqlConnection(connectionString);
 

@@ -8,11 +8,8 @@
 
 	<ItemGroup>
 	  <Compile Remove="Features\TableManagement\Commands\DeleteTable\**" />
-	  <Compile Remove="Features\TableManagement\Commands\UploadExcel\**" />
 	  <EmbeddedResource Remove="Features\TableManagement\Commands\DeleteTable\**" />
-	  <EmbeddedResource Remove="Features\TableManagement\Commands\UploadExcel\**" />
 	  <None Remove="Features\TableManagement\Commands\DeleteTable\**" />
-	  <None Remove="Features\TableManagement\Commands\UploadExcel\**" />
 	</ItemGroup>
 
 	<ItemGroup>

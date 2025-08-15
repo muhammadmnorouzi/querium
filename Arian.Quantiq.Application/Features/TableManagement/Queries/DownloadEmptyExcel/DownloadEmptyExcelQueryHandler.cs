@@ -47,7 +47,7 @@ public class DownloadEmptyExcelQueryHandler(
             return (new ErrorContainer([$"User connection string is not set."]), HttpStatusCode.NotFound);
         }
 
-        List<ColumnMetadata> columnsMetadata = await tableMetadataService.GetTableColumnsAsync(request.TableName, userConnectionString, cancellationToken);
+        IReadOnlyList<ColumnMetadata> columnsMetadata = await tableMetadataService.GetTableColumnsAsync(request.TableName, userConnectionString, cancellationToken);
         MemoryStream memoryStream = excelService.GenerateExcelTemplate(columnsMetadata);
 
         return (memoryStream, HttpStatusCode.OK);

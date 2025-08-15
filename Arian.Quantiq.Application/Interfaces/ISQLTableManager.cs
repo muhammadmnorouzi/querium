@@ -1,4 +1,5 @@
-﻿using Arian.Quantiq.Application.DTOs.TableManagement;
+﻿using Arian.Quantiq.Application.DTOs;
+using Arian.Quantiq.Application.DTOs.TableManagement;
 using Arian.Quantiq.Domain.Common.Results;
 
 namespace Arian.Quantiq.Application.Interfaces;
@@ -18,4 +19,5 @@ public interface ISQLTableManager
     /// <see cref="ApplicationResult{T}"/> indicating the success or failure of the operation.
     /// </returns>
     Task<ApplicationResult<AppVoid>> CreateTable(CreateTableDTO input, CancellationToken cancellationToken = default);
+    Task<ApplicationResult<DynamicTableDTO>> InsertDynamicData(DynamicTableDTO dynamicDataDTO, string connectionString, CancellationToken cancellationToken);
 }

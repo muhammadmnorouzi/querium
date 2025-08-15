@@ -6,10 +6,10 @@
 /// </summary>
 public class ColumnMetadata
 {
-    public string Name { get; set; } = string.Empty;
-    public string DataType { get; set; } = string.Empty; // Stored as a string to be database-agnostic
-    public int? Length { get; set; }
-    public int? Precision { get; set; }
-    public int? Scale { get; set; }
-    public bool IsNullable { get; set; }
+    public string Name { get; init; } = string.Empty;
+    public string DataType { get; init; } = string.Empty; // Stored as a string to be database-agnostic
+    public int? Length { get; init; }
+    public int? Precision { get; init; }
+    public int? Scale { get; init; }
+    public bool IsNullable { get; init; }
 }

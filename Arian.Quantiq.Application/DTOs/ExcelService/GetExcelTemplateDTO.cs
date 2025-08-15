@@ -1,7 +1,6 @@
-﻿namespace Arian.Quantiq.Application.DTOs.ExcelService
+﻿namespace Arian.Quantiq.Application.DTOs.ExcelService;
+
+public class GetExcelTemplateDTO
 {
-    public class GetExcelTemplateDTO
-    {
-        public string TableName { get; set; } = string.Empty;
-    }
+    public string TableName { get; set; } = string.Empty;
 }
